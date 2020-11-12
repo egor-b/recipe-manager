@@ -1,4 +1,4 @@
-package com.foodcrunch.foodster.recipemanager.Constant;
+package com.foodcrunch.foodster.recipemanager.constant;
 
 public final class ExceptionsConstants {
     public static final String RECIPE_NOT_FOUND = "Recipe was not found by id {0}. Make sure that id was correct.";

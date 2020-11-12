@@ -1,6 +1,6 @@
 package com.foodcrunch.foodster.recipemanager.service;
 
-import com.foodcrunch.foodster.recipemanager.Constant.LogLevel;
+import com.foodcrunch.foodster.recipemanager.constant.LogLevel;
 import com.foodcrunch.foodster.recipemanager.exception.BadRequestException;
 import com.foodcrunch.foodster.recipemanager.model.Recipe;
 import com.foodcrunch.foodster.recipemanager.repository.RecipeInterface;
@@ -16,11 +16,11 @@ import reactor.core.publisher.Flux;
 import java.text.MessageFormat;
 import java.util.Map;
 
-import static com.foodcrunch.foodster.recipemanager.Constant.ExceptionsConstants.RECIPE_NOT_FOUND;
-import static com.foodcrunch.foodster.recipemanager.Constant.ExceptionsConstants.LOW_FOOD;
-import static com.foodcrunch.foodster.recipemanager.Constant.ExceptionsConstants.LOW_STEPS;
-import static com.foodcrunch.foodster.recipemanager.Constant.ExceptionsConstants.TOO_MANY_RECIPES;
-import static com.foodcrunch.foodster.recipemanager.Constant.ExceptionsConstants.UNKNOWN_SORT;
+import static com.foodcrunch.foodster.recipemanager.constant.ExceptionsConstants.RECIPE_NOT_FOUND;
+import static com.foodcrunch.foodster.recipemanager.constant.ExceptionsConstants.LOW_FOOD;
+import static com.foodcrunch.foodster.recipemanager.constant.ExceptionsConstants.LOW_STEPS;
+import static com.foodcrunch.foodster.recipemanager.constant.ExceptionsConstants.TOO_MANY_RECIPES;
+import static com.foodcrunch.foodster.recipemanager.constant.ExceptionsConstants.UNKNOWN_SORT;
 
 @Slf4j
 @Service
