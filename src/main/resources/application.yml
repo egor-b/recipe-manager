@@ -1,0 +1,42 @@
+spring:
+  main:
+    allow-bean-definition-overriding: true
+    output:
+      ansi:
+        enabled: always
+
+  jackson:
+    mapper:
+      accept-case-insensitive-properties: true
+
+  datasource:
+    url: jdbc:postgresql://ec2-3-234-169-147.compute-1.amazonaws.com:5432/d1se6j1viek0a3
+    username: rbhacpohxzggkh
+    password: dfb5d5f47ddc2ecee0ee477576a3e96c4e3330e0f7c01d268da0f17b2b826568
+
+  jpa:
+    show-sql: false
+    properties:
+      hibernate:
+        default_schema: FC
+        dialect: org.hibernate.dialect.PostgreSQLDialect
+    hibernate:
+      ddl-auto: update
+
+#Log4j2
+log4j2:
+  logpath: logs/Foodcrunch.log
+  archive.path: logs/archive/Foodcrunch-%d{MM-dd-yyyy}-%i.log.zip
+  filesize: 50MB
+  foodcrunch:
+    api:
+      loglevel: ERROR
+      additivity: FALSE
+  root:
+    loglevel: INFO
+
+  #fc.security.header.app-token=Application-Token
+fc:
+  security:
+    header:
+      user-token: User-Token

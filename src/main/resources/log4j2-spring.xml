@@ -1,0 +1,86 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Configuration>
+    <Properties>
+        <Property name="filename">${bundle:application:log4j2.logpath}</Property>
+        <Property name="archive">${bundle:application:log4j2.archive.path}</Property>
+        <Property name="filesize">${bundle:application:log4j2.logfile.filesize}</Property>
+
+        <Property name="root">${bundle:application:log4j2.root.loglevel}</Property>
+
+        <Property name="api">${bundle:application:log4j2.foodcrunch.api.loglevel}</Property>
+        <Property name="database">${bundle:application:log4j2.foodcrunch.api.database.loglevel}</Property>
+        <Property name="auth">${bundle:application:log4j2.foodcrunch.api.auth.loglevel}</Property>
+        <Property name="boot">${bundle:application:org.springframework.boot.loglevel}</Property>
+        <Property name="core">${bundle:application:org.springframework.core.loglevel}</Property>
+
+        <Property name="api.additivity">${bundle:application:log4j2.foodcrunch.api.additivity}</Property>
+        <Property name="database.additivity">${bundle:application:log4j2.foodcrunch.api.database.additivity}</Property>
+        <Property name="auth.additivity">${bundle:application:log4j2.foodcrunch.api..auth.additivity}</Property>
+        <Property name="boot.additivity">${bundle:application:org.springframework.boot.additivity}</Property>
+        <Property name="core.additivity">${bundle:application:org.springframework.core.additivity}</Property>
+
+<!--    Custom logging class    -->
+        <Property name="class.path">${bundle:application:log4j2.custom.classpath}</Property>
+        <Property name="custom.level">${bundle:application:log4j2.custom.classpath.level}</Property>
+        <Property name="custom.additivity">${bundle:application:log4j2.custom.classpath.additivity}</Property>
+    </Properties>
+
+    <Appenders>
+        <!-- Console Appender -->
+        <Console name="Console" target="SYSTEM_OUT">
+            <PatternLayout pattern="%d{yyyy-MMM-dd HH:mm:ss a} [%t] %-5level %logger{36} - %msg%n" />
+        </Console>
+        <!-- File Appender -->
+<!--        <File name="File" fileName="${filename}">-->
+<!--            <PatternLayout pattern="%d{yyyy-MMM-dd HH:mm:ss a} [%t] %-5level %logger{36} - %msg%n" />-->
+<!--        </File>-->
+
+        <RollingFile name="File" fileName="${filename}" filePattern="${archive}">
+            <PatternLayout pattern="%d{yyyy-MMM-dd HH:mm:ss a} [%t] %-5level %logger{36} - %msg%n" />
+            <Policies>
+                <!-- rollover on startup, daily and when the file reaches
+                    10 MegaBytes -->
+<!--                <SizeBasedTriggeringPolicy size="${filesize}" />-->
+                <CronTriggeringPolicy schedule="0 0 12 * * ?" />
+            </Policies>
+        </RollingFile>
+    </Appenders>
+
+    <Loggers>
+        <!-- Log everything in custom package -->
+        <Logger name="com.foodcrunch.api" level="${api}" additivity="${api.additivity}">
+            <AppenderRef ref="Console" />
+            <AppenderRef ref="File" />
+        </Logger>
+        <Logger name="com.foodcrunch.api.database" level="${database}" additivity="${database.additivity}">
+            <AppenderRef ref="Console" />
+            <AppenderRef ref="File" />
+        </Logger>
+        <Logger name="com.foodcrunch.api.auth" level="${auth}" additivity="${auth.additivity}">
+            <AppenderRef ref="Console" />
+            <AppenderRef ref="File" />
+        </Logger>
+
+        <!-- Log everything in Spring Boot -->
+        <Logger name="org.springframework.boot" level="${boot}" additivity="${boot.additivity}">
+            <AppenderRef ref="Console" />
+            <AppenderRef ref="File" />
+        </Logger>
+
+        <!-- Log everything in Spring Core -->
+        <Logger name="org.springframework.core" level="${core}" additivity="${core.additivity}">
+            <AppenderRef ref="Console" />
+            <AppenderRef ref="File" />
+        </Logger>
+
+        <Logger name="${class.path}" level="${custom.level}" additivity="${custom.additivity}">
+            <AppenderRef ref="File" />
+        </Logger>
+
+        <Root level="${root}">
+            <AppenderRef ref="Console" />
+            <AppenderRef ref="File" />
+        </Root>
+
+    </Loggers>
+</Configuration>
