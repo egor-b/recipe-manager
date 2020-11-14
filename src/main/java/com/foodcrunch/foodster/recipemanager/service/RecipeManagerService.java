@@ -2,6 +2,7 @@ package com.foodcrunch.foodster.recipemanager.service;
 
 import com.foodcrunch.foodster.recipemanager.constant.LogLevel;
 import com.foodcrunch.foodster.recipemanager.exception.BadRequestException;
+import com.foodcrunch.foodster.recipemanager.exception.NotFoundException;
 import com.foodcrunch.foodster.recipemanager.model.Recipe;
 import com.foodcrunch.foodster.recipemanager.repository.RecipeInterface;
 import com.foodcrunch.foodster.recipemanager.repository.RecipeRepository;
@@ -38,7 +39,7 @@ public class RecipeManagerService {
 
         if (recipe == null) {
             String message = buildLogEvent(RECIPE_NOT_FOUND, LogLevel.ERROR, null, id);
-            return Flux.error(new BadRequestException(message));
+            return Flux.error(new NotFoundException(message));
         }
         return Flux.just(recipe);
     }

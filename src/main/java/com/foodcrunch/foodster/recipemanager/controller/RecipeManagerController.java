@@ -21,6 +21,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.method.annotation.MethodArgumentTypeMismatchException;
 import reactor.core.publisher.Flux;
 
 import javax.transaction.Transactional;
@@ -45,7 +46,9 @@ public class RecipeManagerController {
     public Flux<Recipe> getRecipeById(@PathVariable(value = "id") Long recipeId) {
         return recipeManagerService.retrieveRecipeById(recipeId)
                 .doOnNext(success ->
-                        log.info("Recipe '{}' was return. Id is {}", success.getName(), success.getId()));
+                        log.info("Recipe '{}' was returned. Id is {}", success.getName(), success.getId()))
+                .doOnError(error ->
+                        log.debug(error.getStackTrace()));
 
     }
 
@@ -65,7 +68,9 @@ public class RecipeManagerController {
                                           @RequestBody Map<String, String> body) {
         return recipeManagerService.findRecipesByCriteria(pageNumber,number, sortKey, sort, body)
                 .doOnNext(success ->
-                        log.info("Recipe '" + success.getName() + "' was found. id = " + success.getId()));
+                        log.info("Recipe '" + success.getName() + "' was found. id = " + success.getId()))
+                .doOnError(error ->
+                        log.debug(error.getStackTrace()));
     }
 
     //SAVE RECIPE
@@ -76,8 +81,8 @@ public class RecipeManagerController {
         recipeManagerService.saveRecipe(recipe);
     }
 
-    @ExceptionHandler({BadRequestException.class})
-    public final ResponseEntity<Recipe> badRequestHandleException(BadRequestException e) {
+    @ExceptionHandler({BadRequestException.class, MethodArgumentTypeMismatchException.class})
+    public final ResponseEntity<Recipe> badRequestHandleException(Exception e) {
         ErrorResponse errorResponse = new ErrorResponse("Bad request", e.getLocalizedMessage());
         return new ResponseEntity(errorResponse, HttpStatus.BAD_REQUEST);
     }

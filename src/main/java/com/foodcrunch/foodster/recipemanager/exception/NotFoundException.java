@@ -9,12 +9,9 @@ public class NotFoundException extends RecipeServiceException {
 
     private static final long serialVersionUID = 8354279296660607949L;
 
-    @Getter
-    private final String id;
 
-    public NotFoundException(String id) {
-        super("Recipe with id " + id + " isn't found");
-        this.id = id;
+    public NotFoundException(String exception) {
+        super(exception);
     }
 
 }
