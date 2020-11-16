@@ -128,7 +128,7 @@ public class RecipeInterfaceService implements RecipeInterface {
                 f.setFoodstuffEntity(resultFs);
             }
 
-            insertCookfood//.setParameter("image_link",f.getImage())
+            insertCookfood.setParameter("image_link",f.getImage())
                     .setParameter("food_id", f.getFoodstuffEntity().getId())
                     .setParameter("measure", f.getMeasure())
                     .setParameter("recipe_id", recipe.getId())
@@ -137,15 +137,15 @@ public class RecipeInterfaceService implements RecipeInterface {
 
         }
 //save cook steps
-        recipe.getCookStepEntity().parallelStream().forEach((n) ->
-                insertCookstep//.setParameter("image_link", n.getImage())
+        recipe.getCookStepEntity().forEach((n) ->
+                insertCookstep.setParameter("image_link", n.getImage())
                         .setParameter("step", n.getStep())
                         .setParameter("step_number", n.getStepId())
                         .setParameter("recipe_id", recipe.getId()).executeUpdate()
         );
 // save links to dish images
-        recipe.getImageEntity().parallelStream().forEach((n) ->
-                insertImage//.setParameter("image_link", n.getImage())
+        recipe.getImageEntity().forEach((n) ->
+                insertImage.setParameter("image_link", n.getImage())
                         .setParameter("recipe_id", recipe.getId()).executeUpdate()
         );
     }

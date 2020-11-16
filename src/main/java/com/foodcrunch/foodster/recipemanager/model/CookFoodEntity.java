@@ -38,17 +38,18 @@ public class CookFoodEntity implements Serializable {
     @Column(name = "MEASURE", nullable = false)
     private String measure;
 
+    @JsonProperty("_link")
     @Column(name = "IMAGE_LINK")
-    private String _link;
+    private String image;
 
     public CookFoodEntity() {}
 
-    public CookFoodEntity(long id, FoodstuffEntity foodstuffEntity, int size, String measure, String _link, long recipe_id) {
+    public CookFoodEntity(long id, FoodstuffEntity foodstuffEntity, int size, String measure, String image, long recipe_id) {
         this.setId(id);
         this.setFoodstuffEntity(foodstuffEntity);
         this.setSize(size);
         this.setMeasure(measure);
-        this.setImage(_link);
+        this.setImage(image);
     }
 
     @JsonIgnore
@@ -56,11 +57,11 @@ public class CookFoodEntity implements Serializable {
     public FoodstuffEntity getFoodstuffEntity() { return foodstuffEntity; }
     public int getSize() { return  size; }
     public String getMeasure() { return measure; }
-    public String getImage() { return _link; }
+    public String getImage() { return image; }
 
     public void setId(long id) { this.id = id; }
     public void setFoodstuffEntity(FoodstuffEntity foodstuffEntity) { this.foodstuffEntity = foodstuffEntity; }
     public void setSize(int size) { this.size = size; }
     public void setMeasure(String measure) { this.measure = measure; }
-    public void setImage(String _link) { this._link = _link; }
+    public void setImage(String _link) { this.image = _link; }
 }

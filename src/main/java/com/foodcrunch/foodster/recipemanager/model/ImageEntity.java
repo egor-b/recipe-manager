@@ -1,6 +1,6 @@
 package com.foodcrunch.foodster.recipemanager.model;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Data;
 
 import javax.persistence.Column;
@@ -21,9 +21,8 @@ public class ImageEntity implements Serializable {
     @SequenceGenerator(name = "IMAGE_SEQ", sequenceName = "IMAGE_SEQ", allocationSize = 1)
     private long id;
 
+    @JsonProperty("_link")
     @Column(name = "IMAGE_LINK", nullable = false)
-    private String _link;
+    private String image;
 
-    @JsonIgnore
-    public long getId() { return id; }
 }

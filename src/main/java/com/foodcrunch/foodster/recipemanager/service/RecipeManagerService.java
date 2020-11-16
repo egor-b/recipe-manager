@@ -8,7 +8,6 @@ import com.foodcrunch.foodster.recipemanager.repository.RecipeInterface;
 import com.foodcrunch.foodster.recipemanager.repository.RecipeRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
@@ -28,11 +27,14 @@ import static com.foodcrunch.foodster.recipemanager.constant.ExceptionsConstants
 @RequiredArgsConstructor
 public class RecipeManagerService {
 
-    @Autowired
-    private RecipeRepository recipeRepository;
+    private final RecipeRepository recipeRepository;
 
-    @Autowired
-    private RecipeInterface recipeInterface;
+    private final RecipeInterface recipeInterface;
+
+    public Flux<Recipe> getAllRecipesInRowByPageNumber(Integer pageNumber) {
+        PageRequest page = PageRequest.of(pageNumber, 5);
+        return Flux.fromIterable(recipeRepository.findAll(page).getContent());
+    }
 
     public Flux<Recipe> retrieveRecipeById(Long id) {
         final Recipe recipe = recipeRepository.findById(id).orElseGet(() -> null);
@@ -61,7 +63,7 @@ public class RecipeManagerService {
                 String message = buildLogEvent(UNKNOWN_SORT, LogLevel.ERROR, null, sort);
                 return Flux.error(new BadRequestException(message));
         }
-        return Flux.fromIterable(recipeInterface.findByPagingCriteria(page, criterias).getContent());
+        return Flux.fromIterable(recipeInterface.findByPagingCriteria(page, criterias));
     }
 
     public Flux<Object> saveRecipe(Recipe recipe) {

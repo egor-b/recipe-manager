@@ -36,6 +36,23 @@ public class RecipeManagerController {
     @Autowired
     private RecipeManagerService recipeManagerService;
 
+
+    @GetMapping(path = "")
+    @ResponseStatus(HttpStatus.OK)
+    @ApiOperation(value = "Retrieve recipes", notes = "Retrieve recipes in a row")
+    @ApiResponses(value = {@ApiResponse(code = 200, message = "", response = Recipe.class, responseContainer = "Recipe"),
+            @ApiResponse(code = 404, message = "Recipe not found", response = NotFoundException.class),
+            @ApiResponse(code = 400, message = "Missing or invalid request body", response = BadRequestException.class),
+            @ApiResponse(code = 500, message = "Internal Server error")})
+    public Flux<Recipe> getRecipes(@RequestParam(value = "page", defaultValue = "0") int page) {
+        return recipeManagerService.getAllRecipesInRowByPageNumber(page)
+                .doOnNext(success ->
+                        log.info("Recipe '{}' was returned. Id is {}", success.getName(), success.getId()))
+                .doOnError(error ->
+                        log.debug(error.getStackTrace().toString()));
+
+    }
+
     @GetMapping(path = "/{id}")
     @ResponseStatus(HttpStatus.OK)
     @ApiOperation(value = "Retrieve recipe", notes = "Search recipe by ID")
@@ -48,7 +65,7 @@ public class RecipeManagerController {
                 .doOnNext(success ->
                         log.info("Recipe '{}' was returned. Id is {}", success.getName(), success.getId()))
                 .doOnError(error ->
-                        log.debug(error.getStackTrace()));
+                        log.debug(error.getStackTrace().toString()));
 
     }
 
@@ -70,7 +87,7 @@ public class RecipeManagerController {
                 .doOnNext(success ->
                         log.info("Recipe '" + success.getName() + "' was found. id = " + success.getId()))
                 .doOnError(error ->
-                        log.debug(error.getStackTrace()));
+                        log.debug(error.getStackTrace().toString()));
     }
 
     //SAVE RECIPE
@@ -78,12 +95,19 @@ public class RecipeManagerController {
     @PostMapping(path = "save")
     @ResponseStatus(HttpStatus.ACCEPTED)
     public void saveRecipe(@Valid @RequestBody Recipe recipe) {
+        System.out.println(recipe);
         recipeManagerService.saveRecipe(recipe);
     }
 
     @ExceptionHandler({BadRequestException.class, MethodArgumentTypeMismatchException.class})
     public final ResponseEntity<Recipe> badRequestHandleException(Exception e) {
         ErrorResponse errorResponse = new ErrorResponse("Bad request", e.getLocalizedMessage());
+        return new ResponseEntity(errorResponse, HttpStatus.BAD_REQUEST);
+    }
+
+    @ExceptionHandler({NullPointerException.class})
+    public final ResponseEntity<Recipe> processNulPointerThenReturnBadRequestException(Exception e) {
+        ErrorResponse errorResponse = new ErrorResponse("Bad request", "Was sent incorrect request.");
         return new ResponseEntity(errorResponse, HttpStatus.BAD_REQUEST);
     }
 

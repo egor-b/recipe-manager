@@ -2,6 +2,7 @@ package com.foodcrunch.foodster.recipemanager.controller;
 
 import com.foodcrunch.foodster.recipemanager.exception.BadRequestException;
 import com.foodcrunch.foodster.recipemanager.exception.NotFoundException;
+import com.foodcrunch.foodster.recipemanager.model.Recipe;
 import com.foodcrunch.foodster.recipemanager.service.RecipeManagerService;
 import org.junit.jupiter.api.Test;
 import org.junit.runner.RunWith;
@@ -119,5 +120,47 @@ public class RecipeManagerControllerTest {
                 .expectStatus()
                 .isBadRequest();
         verify(recipeManagerService, times(1)).findRecipesByCriteria(0,9999,"date", "desc", TestValue.getRequestBody());
+    }
+
+    @Test
+    @WithMockUser
+    public void whenValidPageNumber_thenReturnListOfRecipe() {
+        when(recipeManagerService.getAllRecipesInRowByPageNumber(0)).thenReturn(Flux.fromIterable(TestValue.getListValidRecipes(10)));
+        webTestClient.mutateWith(csrf())
+                .get()
+                .uri("/v1/recipe?page=0")
+                .accept(MediaType.APPLICATION_JSON)
+                .exchange()
+                .expectStatus()
+                .isOk();
+        verify(recipeManagerService, times(1)).getAllRecipesInRowByPageNumber(0);
+    }
+
+    @Test
+    @WithMockUser
+    public void whenInvalidPageNumber_thenReturnBadRequestException() {
+        webTestClient.mutateWith(csrf())
+                .get()
+                .uri("/v1/recipe?page=h")
+                .accept(MediaType.APPLICATION_JSON)
+                .exchange()
+                .expectStatus()
+                .isBadRequest();
+        verify(recipeManagerService, times(0)).getAllRecipesInRowByPageNumber(0);
+    }
+
+    @Test
+    @WithMockUser
+    public void whenValidRecipe_thenSaveToDb() {
+        Recipe recipe = TestValue.getRecipe(0, 5);
+        webTestClient.mutateWith(csrf())
+                .post()
+                .uri("/v1/recipe/save")
+                .accept(MediaType.APPLICATION_JSON)
+                .bodyValue(recipe)
+                .exchange()
+                .expectStatus()
+                .isAccepted();
+        verify(recipeManagerService, times(1)).saveRecipe(recipe);
     }
 }

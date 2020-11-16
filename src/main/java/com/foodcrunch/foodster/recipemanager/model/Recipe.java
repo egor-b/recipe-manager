@@ -22,6 +22,7 @@ import java.util.Set;
 @Data
 @Table(name = "RECIPE")
 public class Recipe implements Serializable {
+
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "RECIPE_SEQ")
     @SequenceGenerator(name = "RECIPE_SEQ", sequenceName = "RECIPE_SEQ", allocationSize = 1)
