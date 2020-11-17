@@ -74,7 +74,7 @@ public class RecipeInterfaceService implements RecipeInterface {
                     subCookFood.select(subCookFoodProject.get("recipe"));
                     subCookFood.where(criteriaBuilder.and(subCookFoodProject.get("foodstuffEntity").in(subFoodstuff)));
 
-                    predicates.add(criteriaBuilder.and(root.get("id").in(subCookFood)));;
+                    predicates.add(criteriaBuilder.and(root.get("id").in(subCookFood)));
                 } else if(/*param.get("minServe")!=null && */param.get("maxServe")!=null) {
 //                        predicates.add(criteriaBuilder.between(
 //                                root.get("serve"), Integer.valueOf(param.get("minServe")), Integer.valueOf(param.get("maxServe"))

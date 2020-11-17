@@ -3,7 +3,9 @@ package com.foodcrunch.foodster.recipemanager.service;
 import com.foodcrunch.foodster.recipemanager.model.Recipe;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public class TestValue {
 
@@ -31,6 +33,14 @@ public class TestValue {
 
     public static Recipe getValidRecipe() {
         return getListValidRecipes(1).get(0);
+    }
+
+    public static Map<String, String> getBodyOfCriteria() {
+        Map<String, String> map = new HashMap<>();
+        map.put("ingredient", "onion");
+        map.put("maxServe", "4");
+
+        return map;
     }
 
 }

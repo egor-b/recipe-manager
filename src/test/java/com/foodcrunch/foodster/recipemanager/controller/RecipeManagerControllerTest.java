@@ -4,11 +4,12 @@ import com.foodcrunch.foodster.recipemanager.exception.BadRequestException;
 import com.foodcrunch.foodster.recipemanager.exception.NotFoundException;
 import com.foodcrunch.foodster.recipemanager.model.Recipe;
 import com.foodcrunch.foodster.recipemanager.service.RecipeManagerService;
-import org.junit.jupiter.api.Test;
+import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.reactive.WebFluxTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.data.domain.Sort;
 import org.springframework.http.MediaType;
 import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
@@ -77,7 +78,7 @@ public class RecipeManagerControllerTest {
     @Test
     @WithMockUser
     public void whenValidSearchCriteria_thenReturnListOfRecipe() {
-        when(recipeManagerService.findRecipesByCriteria(0,10,"date", "desc", TestValue.getRequestBody()))
+        when(recipeManagerService.findRecipesByCriteria(0,10,"date", Sort.Direction.DESC, TestValue.getRequestBody()))
                 .thenReturn(Flux.fromIterable(TestValue.getListValidRecipes(3)));
         webTestClient.mutateWith(csrf())
                 .post()
@@ -87,39 +88,23 @@ public class RecipeManagerControllerTest {
                 .exchange()
                 .expectStatus()
                 .isOk();
-        verify(recipeManagerService, times(1)).findRecipesByCriteria(0,10,"date", "desc", TestValue.getRequestBody());
-    }
-
-    @Test
-    @WithMockUser
-    public void whenInvalidSearchSort_thenReturnBadRequest() {
-        when(recipeManagerService.findRecipesByCriteria(0,10,"date", "board", TestValue.getRequestBody()))
-                .thenReturn(Flux.error(new BadRequestException("board")));
-        webTestClient.mutateWith(csrf())
-                .post()
-                .uri("/v1/recipe/search?order=board")
-                .accept(MediaType.APPLICATION_JSON)
-                .bodyValue(TestValue.getRequestBody())
-                .exchange()
-                .expectStatus()
-                .isBadRequest();
-        verify(recipeManagerService, times(1)).findRecipesByCriteria(0,10,"date", "board", TestValue.getRequestBody());
+        verify(recipeManagerService, times(1)).findRecipesByCriteria(0,10,"date", Sort.Direction.DESC, TestValue.getRequestBody());
     }
 
     @Test
     @WithMockUser
     public void whenInvalidCountOfRecipesPerPage_thenReturnBadRequest() {
-        when(recipeManagerService.findRecipesByCriteria(0,9999,"date", "desc", TestValue.getRequestBody()))
+        when(recipeManagerService.findRecipesByCriteria(0,9999,"date", Sort.Direction.DESC, TestValue.getRequestBody()))
                 .thenReturn(Flux.error(new BadRequestException("board")));
         webTestClient.mutateWith(csrf())
                 .post()
-                .uri("/v1/recipe/search?order=desc&number=9999")
+                .uri("/v1/recipe/search?order=DESC&number=9999")
                 .accept(MediaType.APPLICATION_JSON)
                 .bodyValue(TestValue.getRequestBody())
                 .exchange()
                 .expectStatus()
                 .isBadRequest();
-        verify(recipeManagerService, times(1)).findRecipesByCriteria(0,9999,"date", "desc", TestValue.getRequestBody());
+        verify(recipeManagerService, times(1)).findRecipesByCriteria(0,9999,"date", Sort.Direction.DESC, TestValue.getRequestBody());
     }
 
     @Test

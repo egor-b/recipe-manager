@@ -10,6 +10,7 @@ import io.swagger.annotations.ApiResponse;
 import io.swagger.annotations.ApiResponses;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -81,7 +82,7 @@ public class RecipeManagerController {
     public Flux<Recipe> findAllByCriteria(@RequestParam(value = "page", defaultValue = "0") int pageNumber,
                                           @RequestParam(value = "sort_field", defaultValue = "date") String sortKey,
                                           @RequestParam(value = "number", defaultValue = "10") int number,
-                                          @RequestParam(value = "order", defaultValue = "desc") String sort,
+                                          @RequestParam(value = "order", defaultValue = "DESC") Sort.Direction sort,
                                           @RequestBody Map<String, String> body) {
         return recipeManagerService.findRecipesByCriteria(pageNumber,number, sortKey, sort, body)
                 .doOnNext(success ->

@@ -20,7 +20,6 @@ import static com.foodcrunch.foodster.recipemanager.constant.ExceptionsConstants
 import static com.foodcrunch.foodster.recipemanager.constant.ExceptionsConstants.LOW_FOOD;
 import static com.foodcrunch.foodster.recipemanager.constant.ExceptionsConstants.LOW_STEPS;
 import static com.foodcrunch.foodster.recipemanager.constant.ExceptionsConstants.TOO_MANY_RECIPES;
-import static com.foodcrunch.foodster.recipemanager.constant.ExceptionsConstants.UNKNOWN_SORT;
 
 @Slf4j
 @Service
@@ -32,7 +31,7 @@ public class RecipeManagerService {
     private final RecipeInterface recipeInterface;
 
     public Flux<Recipe> getAllRecipesInRowByPageNumber(Integer pageNumber) {
-        PageRequest page = PageRequest.of(pageNumber, 5);
+        PageRequest page = PageRequest.of(pageNumber, 20);
         return Flux.fromIterable(recipeRepository.findAll(page).getContent());
     }
 
@@ -46,23 +45,13 @@ public class RecipeManagerService {
         return Flux.just(recipe);
     }
 
-    public Flux<Recipe> findRecipesByCriteria(int pageNumber, int countOfRecipesPerPage, String sortKey, String sort, Map<String, String> criterias) {
-        PageRequest page;
+    public Flux<Recipe> findRecipesByCriteria(int pageNumber, int countOfRecipesPerPage, String sortKey, Sort.Direction sort, Map<String, String> criterias) {
+
         if (countOfRecipesPerPage>100) {
             String message = buildLogEvent(TOO_MANY_RECIPES, LogLevel.ERROR, null, countOfRecipesPerPage);
             return Flux.error(new BadRequestException(message));
         }
-        switch (sort) {
-            case "desc":
-                page = PageRequest.of(pageNumber, countOfRecipesPerPage, Sort.by(Sort.Direction.DESC, sortKey));
-                break;
-            case "asc":
-                page = PageRequest.of(pageNumber, countOfRecipesPerPage, Sort.by(Sort.Direction.ASC, sortKey));
-                break;
-            default:
-                String message = buildLogEvent(UNKNOWN_SORT, LogLevel.ERROR, null, sort);
-                return Flux.error(new BadRequestException(message));
-        }
+        PageRequest page = PageRequest.of(pageNumber, countOfRecipesPerPage, Sort.by(sort, sortKey));
         return Flux.fromIterable(recipeInterface.findByPagingCriteria(page, criterias));
     }
 
