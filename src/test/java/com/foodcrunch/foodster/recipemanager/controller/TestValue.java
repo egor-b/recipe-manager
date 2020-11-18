@@ -58,7 +58,6 @@ public class TestValue {
 
         Recipe recipe = new Recipe();
 
-//        recipe.setId(0);
         recipe.setName("Meatball");
         recipe.setTime(20);
         recipe.setServe(1);

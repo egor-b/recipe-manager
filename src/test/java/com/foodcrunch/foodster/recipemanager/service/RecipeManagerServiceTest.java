@@ -18,7 +18,6 @@ import org.springframework.data.domain.Sort;
 import reactor.core.publisher.Flux;
 import reactor.test.StepVerifier;
 
-import java.util.List;
 import java.util.Optional;
 
 import static org.mockito.Mockito.when;
@@ -40,16 +39,13 @@ public class RecipeManagerServiceTest {
     @Test
     public void whenGetNumberOfPage_thenReturnListOfRecipes() {
         PageRequest page = PageRequest.of(1, 20);
-        final Page<Recipe> recipesPage = new PageImpl<>(TestValue.getListValidRecipes(10));
+        final Page<Recipe> recipesPage = new PageImpl<>(TestValue.getListValidRecipes(2, 5, 5));
         when(recipeRepository.findAll(page)).thenReturn(recipesPage);
         Flux<Recipe> result = recipeManagerService.getAllRecipesInRowByPageNumber(1);
-//        StepVerifier.create(result)
-//                .expectNextMatches(r -> {
-//                    Assertions.assertThat(r.getId()).isEqualTo(0L);
-//                    return true;
-//                })
-//                .expectComplete()
-//                .verify();
+        StepVerifier.create(result)
+                .expectNextMatches(r -> r.getName().equals("Meatball"))
+                .expectNextMatches(r -> r.getName().equals("Meatball"))
+                .verifyComplete();
         verify(recipeRepository, times(1)).findAll(page);
     }
 
@@ -77,24 +73,21 @@ public class RecipeManagerServiceTest {
     @Test
     public void whenGetCriteria_thenReturnPageWithRecipes() {
         PageRequest page = PageRequest.of(0, 20, Sort.by(Sort.Direction.ASC, "date"));
-        final Page<Recipe> recipesPage = new PageImpl<>(TestValue.getListValidRecipes(20));
+        final Page<Recipe> recipesPage = new PageImpl<>(TestValue.getListValidRecipes(2,0, 0));
 
         when(recipeInterface.findByPagingCriteria(page, TestValue.getBodyOfCriteria())).thenReturn(recipesPage);
         Flux<Recipe> result = recipeManagerService.findRecipesByCriteria(0,20, "date", Sort.Direction.ASC, TestValue.getBodyOfCriteria());
-//        StepVerifier.create(result)
-//                .expectNextMatches(r -> {
-//                    Assertions.assertThat(r.c).isEqualTo(0L);
-//                    return true;
-//                })
-//                .expectComplete()
-//                .verify();
+        StepVerifier.create(result)
+                .expectNextMatches(r -> r.getName().equals("Meatball"))
+                .expectNextMatches(r -> r.getName().equals("Meatball"))
+                .verifyComplete();
         verify(recipeInterface, times(1)).findByPagingCriteria(page, TestValue.getBodyOfCriteria());
     }
 
     @Test
     public void whenGetInvalidNumberOfRowsRecipes_thenReturnBadRequestException() {
         PageRequest page = PageRequest.of(0, 20, Sort.by(Sort.Direction.ASC, "date"));
-        final Page<Recipe> recipesPage = new PageImpl<>(TestValue.getListValidRecipes(20));
+        final Page<Recipe> recipesPage = new PageImpl<>(TestValue.getListValidRecipes(20, 5 ,5));
 
 //        when(recipeInterface.findByPagingCriteria(page, TestValue.getBodyOfCriteria())).thenReturn(recipesPage);
         Flux<Recipe> result = recipeManagerService.findRecipesByCriteria(0,9999, "date", Sort.Direction.ASC, TestValue.getBodyOfCriteria());

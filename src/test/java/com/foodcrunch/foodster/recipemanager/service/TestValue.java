@@ -1,30 +1,72 @@
 package com.foodcrunch.foodster.recipemanager.service;
 
+import com.foodcrunch.foodster.recipemanager.model.CookFoodEntity;
+import com.foodcrunch.foodster.recipemanager.model.CookStepEntity;
+import com.foodcrunch.foodster.recipemanager.model.FoodstuffEntity;
+import com.foodcrunch.foodster.recipemanager.model.ImageEntity;
 import com.foodcrunch.foodster.recipemanager.model.Recipe;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 public class TestValue {
 
-    public static List<Recipe> getListValidRecipes(Integer count) {
+    public static List<Recipe> getListValidRecipes(Integer count, Integer numOfIng, Integer numOfSteps) {
 
         List<Recipe> recipes = new ArrayList<>();
 
         for(int i = 0; i < count; i++) {
+            Set<CookFoodEntity> cookFoodEntities = new HashSet<>();
+            Set<CookStepEntity> cookStepEntities = new HashSet<>();
+            Set<ImageEntity> imageEntities = new HashSet<>();
+
             Recipe recipe = new Recipe();
-            recipe.setId(i);
-            recipe.setName("Meatball_" + i);
-            recipe.setTime(65132+i);
-            recipe.setServe(i);
+
+            recipe.setName("Meatball");
+            recipe.setTime(20);
+            recipe.setServe(1);
             recipe.setLevel(3.5);
-            recipe.setType("type_" + i);
-            recipe.setAbout("About_" + i);
-            recipe.setUser_id(i);
+            recipe.setType("type");
+            recipe.setAbout("About");
+            recipe.setUser_id(1);
             recipe.setLang("EN");
-            recipe.isVisible();
+            recipe.setVisible(true);
+
+            for(int ri = 0; ri < numOfIng; ri++) {
+                FoodstuffEntity foodstuffEntity = new FoodstuffEntity();
+                CookFoodEntity cookFoodEntitie = new CookFoodEntity();
+                foodstuffEntity.setName("bla" + ri);
+                cookFoodEntitie.setMeasure("mgr");
+                cookFoodEntitie.setSize(2+ri);
+                cookFoodEntitie.setImage("https://" + ri + ".com");
+                cookFoodEntitie.setFoodstuffEntity(foodstuffEntity);
+                cookFoodEntities.add(cookFoodEntitie);
+            }
+
+            recipe.setCookFoodEntity(cookFoodEntities);
+
+            for(int rs = 0; rs < numOfSteps; rs++) {
+                CookStepEntity cookStepEntity = new CookStepEntity();
+                cookStepEntity.setStepId(rs);
+                cookStepEntity.setStep("Step by step " + rs);
+                cookStepEntity.setImage("https://" + rs + ".com");
+                cookStepEntities.add(cookStepEntity);
+            }
+
+            recipe.setCookStepEntity(cookStepEntities);
+
+            for (int rp = 0; rp < 3; rp++) {
+                ImageEntity imageEntity = new ImageEntity();
+                imageEntity.setImage("https://" + rp + ".com");
+                imageEntities.add(imageEntity);
+            }
+
+            recipe.setImageEntity(imageEntities);
+
             recipes.add(recipe);
         }
 
@@ -32,7 +74,7 @@ public class TestValue {
     }
 
     public static Recipe getValidRecipe() {
-        return getListValidRecipes(1).get(0);
+        return getListValidRecipes(1, 5, 5).get(0);
     }
 
     public static Map<String, String> getBodyOfCriteria() {
