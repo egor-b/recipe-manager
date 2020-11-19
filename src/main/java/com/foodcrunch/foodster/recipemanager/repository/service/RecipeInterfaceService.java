@@ -111,7 +111,7 @@ public class RecipeInterfaceService implements RecipeInterface {
                 .setParameter("serve", recipe.getServe())
                 .setParameter("time", recipe.getTime())
                 .setParameter("type", recipe.getType())
-                .setParameter("user_id", recipe.getUser_id())
+                .setParameter("user_id", recipe.getUserId())
                 .setParameter("visible", recipe.isVisible())
                 .setParameter("id", recipe.getId()).executeUpdate();
 

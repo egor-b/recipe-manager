@@ -44,14 +44,6 @@ public class CookFoodEntity implements Serializable {
 
     public CookFoodEntity() {}
 
-    public CookFoodEntity(long id, FoodstuffEntity foodstuffEntity, int size, String measure, String image, long recipe_id) {
-        this.setId(id);
-        this.setFoodstuffEntity(foodstuffEntity);
-        this.setSize(size);
-        this.setMeasure(measure);
-        this.setImage(image);
-    }
-
     @JsonIgnore
     public long getId() { return id; }
     public FoodstuffEntity getFoodstuffEntity() { return foodstuffEntity; }

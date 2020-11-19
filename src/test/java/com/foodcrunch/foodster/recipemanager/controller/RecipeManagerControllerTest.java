@@ -82,7 +82,7 @@ public class RecipeManagerControllerTest {
                 .thenReturn(Flux.fromIterable(TestValue.getListValidRecipes(3)));
         webTestClient.mutateWith(csrf())
                 .post()
-                .uri("/v1/recipe/search?page=0&number=10")
+                .uri("/v1/recipe/search?page=0&page_size=10")
                 .accept(MediaType.APPLICATION_JSON)
                 .bodyValue(TestValue.getRequestBody())
                 .exchange()
@@ -98,7 +98,7 @@ public class RecipeManagerControllerTest {
                 .thenReturn(Flux.error(new BadRequestException("board")));
         webTestClient.mutateWith(csrf())
                 .post()
-                .uri("/v1/recipe/search?order=DESC&number=9999")
+                .uri("/v1/recipe/search?order=DESC&page_size=9999")
                 .accept(MediaType.APPLICATION_JSON)
                 .bodyValue(TestValue.getRequestBody())
                 .exchange()
@@ -148,4 +148,35 @@ public class RecipeManagerControllerTest {
                 .isAccepted();
         verify(recipeManagerService, times(1)).saveRecipe(recipe);
     }
+
+    @Test
+    @WithMockUser
+    public void whenValidUserId_thenReturnListOfRecipe() {
+        when(recipeManagerService.getRecipesByUserId(TestValue.getValidId, 0,20,"date", Sort.Direction.ASC))
+                .thenReturn(Flux.fromIterable(TestValue.getListValidRecipes(3)));
+        webTestClient.mutateWith(csrf())
+                .get()
+                .uri("/v1/recipe/user/{id}", 1)
+                .accept(MediaType.APPLICATION_JSON)
+                .exchange()
+                .expectStatus()
+                .isOk();
+        verify(recipeManagerService, times(1)).getRecipesByUserId(TestValue.getValidId, 0,20,"date", Sort.Direction.ASC);
+    }
+
+    @Test
+    @WithMockUser
+    public void whenInvalidValidUserAndInvalidCriteria_thenReturnBadRequest() {
+        when(recipeManagerService.getRecipesByUserId(TestValue.getValidId, 0,9999,"date", Sort.Direction.DESC))
+                .thenReturn(Flux.error(new BadRequestException("board")));
+        webTestClient.mutateWith(csrf())
+                .get()
+                .uri("/v1/recipe/user/{id}?order=DESC&page_size=9999", 1)
+                .accept(MediaType.APPLICATION_JSON)
+                .exchange()
+                .expectStatus()
+                .isBadRequest();
+        verify(recipeManagerService, times(1)).getRecipesByUserId(TestValue.getValidId, 0,9999,"date", Sort.Direction.DESC);
+    }
+
 }

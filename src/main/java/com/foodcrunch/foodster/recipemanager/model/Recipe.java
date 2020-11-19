@@ -51,7 +51,7 @@ public class Recipe implements Serializable {
     private Date date = new Date();
 
     @Column(name = "USER_ID", nullable = false)
-    private long user_id;
+    private long userId;
 
     @Column(name = "VISIBLE", nullable = false)
     private boolean visible;

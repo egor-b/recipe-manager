@@ -30,7 +30,7 @@ public class TestValue {
             recipe.setLevel(3.5);
             recipe.setType("type_" + i);
             recipe.setAbout("About_" + i);
-            recipe.setUser_id(i);
+            recipe.setUserId(i);
             recipe.setLang("EN");
             recipe.setVisible(true);
             recipes.add(recipe);
@@ -64,7 +64,7 @@ public class TestValue {
         recipe.setLevel(3.5);
         recipe.setType("type");
         recipe.setAbout("About");
-        recipe.setUser_id(1);
+        recipe.setUserId(1);
         recipe.setLang("EN");
         recipe.setVisible(true);
 

@@ -22,12 +22,6 @@ public class FoodstuffEntity implements Serializable {
 
     public FoodstuffEntity() {}
 
-    public FoodstuffEntity(long id, String name) {
-        this.setId(id);
-        this.name = name;
-    }
-
-//    @JsonIgnore
     public long getId() { return id; }
     public String getName() {
         return name;

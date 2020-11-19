@@ -89,7 +89,6 @@ public class RecipeManagerServiceTest {
         PageRequest page = PageRequest.of(0, 20, Sort.by(Sort.Direction.ASC, "date"));
         final Page<Recipe> recipesPage = new PageImpl<>(TestValue.getListValidRecipes(20, 5 ,5));
 
-//        when(recipeInterface.findByPagingCriteria(page, TestValue.getBodyOfCriteria())).thenReturn(recipesPage);
         Flux<Recipe> result = recipeManagerService.findRecipesByCriteria(0,9999, "date", Sort.Direction.ASC, TestValue.getBodyOfCriteria());
         StepVerifier.create(result).expectError(BadRequestException.class).verify();
         verify(recipeInterface, times(0)).findByPagingCriteria(page, TestValue.getBodyOfCriteria());

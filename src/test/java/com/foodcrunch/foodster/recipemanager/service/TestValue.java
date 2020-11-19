@@ -32,7 +32,7 @@ public class TestValue {
             recipe.setLevel(3.5);
             recipe.setType("type");
             recipe.setAbout("About");
-            recipe.setUser_id(1);
+            recipe.setUserId(1);
             recipe.setLang("EN");
             recipe.setVisible(true);
 

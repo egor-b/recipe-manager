@@ -37,7 +37,6 @@ public class RecipeManagerController {
     @Autowired
     private RecipeManagerService recipeManagerService;
 
-
     @GetMapping(path = "")
     @ResponseStatus(HttpStatus.OK)
     @ApiOperation(value = "Retrieve recipes", notes = "Retrieve recipes in a row")
@@ -70,7 +69,6 @@ public class RecipeManagerController {
 
     }
 
-    //SEARCH RECIPE
     @PostMapping(path = "/search")
     @ResponseStatus(HttpStatus.OK)
     @ApiOperation(value = "Retrieve recipes", notes = "Recipes search by filter")
@@ -81,22 +79,39 @@ public class RecipeManagerController {
 
     public Flux<Recipe> findAllByCriteria(@RequestParam(value = "page", defaultValue = "0") int pageNumber,
                                           @RequestParam(value = "sort_field", defaultValue = "date") String sortKey,
-                                          @RequestParam(value = "number", defaultValue = "10") int number,
-                                          @RequestParam(value = "order", defaultValue = "DESC") Sort.Direction sort,
+                                          @RequestParam(value = "page_size", defaultValue = "20") int pageSize,
+                                          @RequestParam(value = "order", defaultValue = "DESC") Sort.Direction sortOrder,
                                           @RequestBody Map<String, String> body) {
-        return recipeManagerService.findRecipesByCriteria(pageNumber,number, sortKey, sort, body)
+        return recipeManagerService.findRecipesByCriteria(pageNumber,pageSize, sortKey, sortOrder, body)
                 .doOnNext(success ->
                         log.info("Recipe '" + success.getName() + "' was found. id = " + success.getId()))
                 .doOnError(error ->
                         log.debug(error.getStackTrace().toString()));
     }
 
-    //SAVE RECIPE
+    @GetMapping(path = "/user/{id}")
+    @ResponseStatus(HttpStatus.OK)
+    @ApiOperation(value = "Retrieve recipes", notes = "Recipes search by user ID")
+    @ApiResponses(value = {@ApiResponse(code = 200, message = "", response = Recipe.class, responseContainer = "Recipe"),
+            @ApiResponse(code = 404, message = "Recipe not found"),
+            @ApiResponse(code = 400, message = "Missing or invalid request body"),
+            @ApiResponse(code = 500, message = "Internal Server error")})
+    public Flux<Recipe> getRecipeByUserId(@PathVariable(value = "id") long userId,
+                                          @RequestParam(value = "page", defaultValue = "0") int pageNumber,
+                                          @RequestParam(value = "page_size", defaultValue = "20") int pageSize,
+                                          @RequestParam(value = "sort_field", defaultValue = "date") String sortKey,
+                                          @RequestParam(value = "order", defaultValue = "ASC") Sort.Direction sortOrder) {
+        return recipeManagerService.getRecipesByUserId(userId, pageNumber, pageSize, sortKey, sortOrder)
+                .doOnNext(success ->
+                        log.info("Recipe '" + success.getName() + "' was found. id = " + success.getId() + ", userId = " + success.getUserId()))
+                .doOnError(error ->
+                        log.debug(error.getStackTrace().toString()));
+    }
+
     @Transactional
     @PostMapping(path = "save")
     @ResponseStatus(HttpStatus.ACCEPTED)
     public void saveRecipe(@Valid @RequestBody Recipe recipe) {
-        System.out.println(recipe);
         recipeManagerService.saveRecipe(recipe);
     }
 

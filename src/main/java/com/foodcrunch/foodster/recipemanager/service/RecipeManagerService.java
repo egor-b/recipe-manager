@@ -45,14 +45,22 @@ public class RecipeManagerService {
         return Flux.just(recipe);
     }
 
-    public Flux<Recipe> findRecipesByCriteria(int pageNumber, int countOfRecipesPerPage, String sortKey, Sort.Direction sort, Map<String, String> criterias) {
-
-        if (countOfRecipesPerPage>100) {
-            String message = buildLogEvent(TOO_MANY_RECIPES, LogLevel.ERROR, null, countOfRecipesPerPage);
+    public Flux<Recipe> findRecipesByCriteria(int pageNumber, int pageSize, String sortKey, Sort.Direction sortOrder, Map<String, String> criterias) {
+        if (pageSize>100) {
+            String message = buildLogEvent(TOO_MANY_RECIPES, LogLevel.ERROR, null, pageSize);
             return Flux.error(new BadRequestException(message));
         }
-        PageRequest page = PageRequest.of(pageNumber, countOfRecipesPerPage, Sort.by(sort, sortKey));
+        PageRequest page = PageRequest.of(pageNumber, pageSize, Sort.by(sortOrder, sortKey));
         return Flux.fromIterable(recipeInterface.findByPagingCriteria(page, criterias));
+    }
+
+    public Flux<Recipe> getRecipesByUserId(Long userId, int pageNumber, int pageSize, String sortKey, Sort.Direction sortOrder/*, Map<String, String> criterias*/) {
+        if (pageSize>100) {
+            String message = buildLogEvent(TOO_MANY_RECIPES, LogLevel.ERROR, null, pageSize);
+            return Flux.error(new BadRequestException(message));
+        }
+        PageRequest page = PageRequest.of(pageNumber, pageSize, Sort.by(sortOrder, sortKey));
+        return Flux.fromIterable(recipeRepository.findByUserIdEquals(page, userId));
     }
 
     public Flux<Object> saveRecipe(Recipe recipe) {
@@ -65,7 +73,6 @@ public class RecipeManagerService {
         recipeInterface.saveRecipe(recipe);
         return null;
     }
-
 
     private String buildLogEvent(String message, LogLevel logLevel, Exception e, Object... args) {
         String notification = MessageFormat.format(message, args);

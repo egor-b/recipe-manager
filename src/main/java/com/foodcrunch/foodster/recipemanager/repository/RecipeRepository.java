@@ -11,5 +11,5 @@ import java.util.Map;
 
 @Repository
 public interface RecipeRepository extends JpaRepository<Recipe, Long>, JpaSpecificationExecutor<Recipe> {
-//    Page<Recipe> findByUserIdEquals(Pageable pageable, long id);
+    Page<Recipe> findByUserIdEquals(Pageable pageable, long id);
 }
