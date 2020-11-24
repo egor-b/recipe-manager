@@ -73,6 +73,23 @@ public class TestValue {
         return recipes;
     }
 
+    public static List<FoodstuffEntity> getFoodList() {
+        List<FoodstuffEntity> foodstuffEntityList = new ArrayList<>();
+
+        FoodstuffEntity foodstuffEntity1 = new FoodstuffEntity();
+        foodstuffEntity1.setId(1L);
+        foodstuffEntity1.setName("Berry");
+
+        FoodstuffEntity foodstuffEntity2 = new FoodstuffEntity();
+        foodstuffEntity2.setId(2L);
+        foodstuffEntity2.setName("Butter");
+
+        foodstuffEntityList.add(foodstuffEntity1);
+        foodstuffEntityList.add(foodstuffEntity2);
+
+        return foodstuffEntityList;
+    }
+
     public static Recipe getValidRecipe() {
         return getListValidRecipes(1, 5, 5).get(0);
     }

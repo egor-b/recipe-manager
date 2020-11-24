@@ -8,6 +8,7 @@ import com.foodcrunch.foodster.recipemanager.service.RecipeManagerService;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiResponse;
 import io.swagger.annotations.ApiResponses;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Sort;
@@ -30,12 +31,12 @@ import javax.validation.Valid;
 import java.util.Map;
 
 @Slf4j
+@RequiredArgsConstructor
 @RestController
 @RequestMapping("/v1/recipe")
 public class RecipeManagerController {
 
-    @Autowired
-    private RecipeManagerService recipeManagerService;
+    private final RecipeManagerService recipeManagerService;
 
     @GetMapping(path = "")
     @ResponseStatus(HttpStatus.OK)

@@ -5,6 +5,7 @@ import com.foodcrunch.foodster.recipemanager.model.CookStepEntity;
 import com.foodcrunch.foodster.recipemanager.model.FoodstuffEntity;
 import com.foodcrunch.foodster.recipemanager.model.ImageEntity;
 import com.foodcrunch.foodster.recipemanager.model.Recipe;
+import reactor.core.publisher.Flux;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -49,6 +50,18 @@ public class TestValue {
         map.put("maxServe", "4");
 
         return map;
+    }
+
+    public static Flux<FoodstuffEntity> getFoodList(Integer count) {
+        List<FoodstuffEntity> foodstuffEntityList = new ArrayList<>();
+        for(int i = 0; i < count; i++) {
+            FoodstuffEntity foodstuffEntity = new FoodstuffEntity();
+            foodstuffEntity.setId(i+1);
+            foodstuffEntity.setName("Berry"+i);
+            foodstuffEntityList.add(foodstuffEntity);
+        }
+
+        return Flux.fromIterable(foodstuffEntityList);
     }
 
     public static Recipe getRecipe(Integer numOfIng, Integer numOfSteps) {
