@@ -92,13 +92,13 @@ public class RecipeInterfaceService implements RecipeInterface {
     @Transactional(rollbackFor = Exception.class, propagation = Propagation.REQUIRES_NEW, isolation = Isolation.SERIALIZABLE)
     public void saveRecipe(Recipe recipe) {
 
-        Query getRecipeSeq = em.createNativeQuery("SELECT nextval('fc.recipe_seq')");
+        Query getRecipeSeq = em.createNativeQuery("SELECT nextval('recipe.recipe_seq')");
 
-        Query insertRecipe = em.createNativeQuery("INSERT INTO FC.RECIPE (about, date, language, level, name, serve, time, type, user_id, visible, id) VALUES (:about, :date, :language, :level, :name, :serve, :time, :type, :user_id, :visible, :id)");
-        Query insertFoodstuff = em.createNativeQuery("INSERT INTO FC.FOODSTUFF (name, id) VALUES (:name, nextval('fc.foodstuff_seq'))");
-        Query insertCookfood = em.createNativeQuery("INSERT INTO FC.COOKFOOD (image_link, food_id, measure, recipe_id, size, id) VALUES (:image_link, :food_id, :measure, :recipe_id, :size, nextval('fc.cookfood_seq'))");
-        Query insertCookstep = em.createNativeQuery("INSERT INTO FC.COOKSTEP (image_link, step, step_number, recipe_id, id) VALUES (:image_link, :step, :step_number, :recipe_id, nextval('fc.cookstep_seq'))");
-        Query insertImage = em.createNativeQuery("INSERT INTO FC.IMAGE (image_link, recipe_id, id) VALUES (:image_link, :recipe_id, nextval('fc.image_seq'))");
+        Query insertRecipe = em.createNativeQuery("INSERT INTO RECIPE.RECIPE (about, date, language, level, name, serve, time, type, user_id, visible, id) VALUES (:about, :date, :language, :level, :name, :serve, :time, :type, :user_id, :visible, :id)");
+        Query insertFoodstuff = em.createNativeQuery("INSERT INTO RECIPE.FOODSTUFF (name, id) VALUES (:name, nextval('recipe.foodstuff_seq'))");
+        Query insertCookfood = em.createNativeQuery("INSERT INTO RECIPE.COOKFOOD (image_link, food_id, measure, recipe_id, size, id) VALUES (:image_link, :food_id, :measure, :recipe_id, :size, nextval('recipe.cookfood_seq'))");
+        Query insertCookstep = em.createNativeQuery("INSERT INTO RECIPE.COOKSTEP (image_link, step, step_number, recipe_id, id) VALUES (:image_link, :step, :step_number, :recipe_id, nextval('recipe.cookstep_seq'))");
+        Query insertImage = em.createNativeQuery("INSERT INTO RECIPE.IMAGE (image_link, recipe_id, id) VALUES (:image_link, :recipe_id, nextval('recipe.image_seq'))");
 //Save main information about recipe
         BigInteger toLong = (BigInteger) getRecipeSeq.getSingleResult();
 

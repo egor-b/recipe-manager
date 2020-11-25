@@ -62,7 +62,6 @@ public class FoodManagerControllerTest {
     @Test
     @WithMockUser
     public void whenGetInvalidString_thenReturnBadRequestException() {
-        when(recipeFoodManagerService.getFoodByName("B", 0, 15, Sort.Direction.ASC, "name")).thenReturn(Flux.error(new BadRequestException("Error")));
         webTestClient.mutateWith(csrf())
                 .get()
                 .uri("/v1/food/search")

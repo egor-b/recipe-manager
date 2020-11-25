@@ -18,25 +18,7 @@ spring:
     show-sql: false
     properties:
       hibernate:
-        default_schema: FC
+        default_schema: recipe
         dialect: org.hibernate.dialect.PostgreSQLDialect
     hibernate:
       ddl-auto: update
-
-#Log4j2
-log4j2:
-  logpath: logs/Foodcrunch.log
-  archive.path: logs/archive/Foodcrunch-%d{MM-dd-yyyy}-%i.log.zip
-  filesize: 50MB
-  foodcrunch:
-    api:
-      loglevel: ERROR
-      additivity: FALSE
-  root:
-    loglevel: INFO
-
-  #fc.security.header.app-token=Application-Token
-fc:
-  security:
-    header:
-      user-token: User-Token
