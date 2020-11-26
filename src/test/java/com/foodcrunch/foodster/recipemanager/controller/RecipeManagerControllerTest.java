@@ -145,7 +145,7 @@ public class RecipeManagerControllerTest {
                 .bodyValue(recipe)
                 .exchange()
                 .expectStatus()
-                .isAccepted();
+                .isCreated();
         verify(recipeManagerService, times(1)).saveRecipe(recipe);
     }
 

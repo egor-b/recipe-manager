@@ -111,7 +111,7 @@ public class RecipeManagerController {
 
     @Transactional
     @PostMapping(path = "save")
-    @ResponseStatus(HttpStatus.ACCEPTED)
+    @ResponseStatus(HttpStatus.CREATED)
     public void saveRecipe(@Valid @RequestBody Recipe recipe) {
         recipeManagerService.saveRecipe(recipe);
     }
