@@ -14,6 +14,7 @@ import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
 import javax.persistence.Table;
 import java.util.Set;
+import java.util.UUID;
 
 @Data
 @Entity
@@ -21,8 +22,11 @@ import java.util.Set;
 public class UserEntity {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private long id;
+    @GeneratedValue(strategy = GenerationType.AUTO)
+    private UUID id;
+
+    @Column(name = "UID", nullable = false, unique = true)
+    private String uid;
 
     @Column(name = "NAME", nullable = false)
     private String name;
@@ -41,9 +45,6 @@ public class UserEntity {
 
     @Column(name = "PHONE")
     private String phone;
-
-    @Column(name = "PASSWORD", nullable = false)
-    private String password;
 
     @Column(name = "PIC")
     private String pic = "pic_template.jpeg";

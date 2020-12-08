@@ -1,6 +1,6 @@
 package com.foodcrunch.foodster.recipemanager.auth.model;
 
-import com.foodcrunch.foodster.recipemanager.model.enumaration.Role;
+import com.foodcrunch.foodster.recipemanager.auth.model.enumaration.Role;
 import lombok.Data;
 
 import javax.persistence.Column;
