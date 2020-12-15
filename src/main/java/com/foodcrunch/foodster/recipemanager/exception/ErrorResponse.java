@@ -1,4 +1,4 @@
-package com.foodcrunch.foodster.recipemanager.model;
+package com.foodcrunch.foodster.recipemanager.exception;
 
 import lombok.Data;
 

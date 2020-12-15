@@ -1,8 +1,8 @@
 package com.foodcrunch.foodster.recipemanager.repository.service;
 
-import com.foodcrunch.foodster.recipemanager.model.CookFoodEntity;
-import com.foodcrunch.foodster.recipemanager.model.FoodstuffEntity;
-import com.foodcrunch.foodster.recipemanager.model.Recipe;
+import com.foodcrunch.foodster.recipemanager.model.entity.FoodEntity;
+import com.foodcrunch.foodster.recipemanager.model.entity.FoodstuffEntity;
+import com.foodcrunch.foodster.recipemanager.model.entity.RecipeEntity;
 import com.foodcrunch.foodster.recipemanager.repository.FoodRepository;
 import com.foodcrunch.foodster.recipemanager.repository.RecipeInterface;
 import com.foodcrunch.foodster.recipemanager.repository.RecipeRepository;
@@ -42,10 +42,10 @@ public class RecipeInterfaceService implements RecipeInterface {
     private EntityManager em;
 
 
-    public Page<Recipe> findByPagingCriteria(Pageable pageable, Map<String, String> param) {
-        Page page = recipeRepository.findAll(new Specification<Recipe>() {
+    public Page<RecipeEntity> findByPagingCriteria(Pageable pageable, Map<String, String> param) {
+        Page page = recipeRepository.findAll(new Specification<RecipeEntity>() {
             @Override
-            public Predicate toPredicate(Root<Recipe> root, CriteriaQuery<?> criteriaQuery, CriteriaBuilder criteriaBuilder) {
+            public Predicate toPredicate(Root<RecipeEntity> root, CriteriaQuery<?> criteriaQuery, CriteriaBuilder criteriaBuilder) {
 
                 List<Predicate> predicates = new ArrayList<>();
                 if (param.get("name")!=null) {
@@ -70,7 +70,7 @@ public class RecipeInterfaceService implements RecipeInterface {
                     subFoodstuff.where(criteriaBuilder.and(subFoodstuffProject.get("name").in(separatedString)));
 
                     Subquery<Long> subCookFood = criteriaQuery.subquery(Long.class);
-                    Root<CookFoodEntity> subCookFoodProject = subCookFood.from(CookFoodEntity.class);
+                    Root<FoodEntity> subCookFoodProject = subCookFood.from(FoodEntity.class);
                     subCookFood.select(subCookFoodProject.get("recipe"));
                     subCookFood.where(criteriaBuilder.and(subCookFoodProject.get("foodstuffEntity").in(subFoodstuff)));
 
@@ -90,63 +90,70 @@ public class RecipeInterfaceService implements RecipeInterface {
     }
 
     @Transactional(rollbackFor = Exception.class, propagation = Propagation.REQUIRES_NEW, isolation = Isolation.SERIALIZABLE)
-    public void saveRecipe(Recipe recipe) {
+    public void saveRecipe(RecipeEntity recipeEntity) {
 
         Query getRecipeSeq = em.createNativeQuery("SELECT nextval('recipe.recipe_seq')");
 
         Query insertRecipe = em.createNativeQuery("INSERT INTO RECIPE.RECIPE (about, date, language, level, name, serve, time, type, user_id, visible, id) VALUES (:about, :date, :language, :level, :name, :serve, :time, :type, :user_id, :visible, :id)");
-        Query insertFoodstuff = em.createNativeQuery("INSERT INTO RECIPE.FOODSTUFF (name, id) VALUES (:name, nextval('recipe.foodstuff_seq'))");
-        Query insertCookfood = em.createNativeQuery("INSERT INTO RECIPE.COOKFOOD (image_link, food_id, measure, recipe_id, size, id) VALUES (:image_link, :food_id, :measure, :recipe_id, :size, nextval('recipe.cookfood_seq'))");
-        Query insertCookstep = em.createNativeQuery("INSERT INTO RECIPE.COOKSTEP (image_link, step, step_number, recipe_id, id) VALUES (:image_link, :step, :step_number, :recipe_id, nextval('recipe.cookstep_seq'))");
-        Query insertImage = em.createNativeQuery("INSERT INTO RECIPE.IMAGE (image_link, recipe_id, id) VALUES (:image_link, :recipe_id, nextval('recipe.image_seq'))");
+        Query insertFoodstuff = em.createNativeQuery("INSERT INTO RECIPE.FOODSTUFF (food_pic_byte, name, id) VALUES (:pic, :name, nextval('recipe.foodstuff_seq'))");
+        Query insertFood = em.createNativeQuery("INSERT INTO RECIPE.FOOD (food_id, measure, recipe_id, size, id) VALUES (:food_id, :measure, :recipe_id, :size, nextval('recipe.cookfood_seq'))");
+        Query insertStep = em.createNativeQuery("INSERT INTO RECIPE.STEP (cook_pic_byte, step, step_number, recipe_id, id) VALUES (:image, :step, :step_number, :recipe_id, nextval('recipe.cookstep_seq'))");
+        Query insertImage = em.createNativeQuery("INSERT INTO RECIPE.IMAGE (pic_byte, recipe_id, id) VALUES (:image, :recipe_id, nextval('recipe.image_seq'))");
 //Save main information about recipe
         BigInteger toLong = (BigInteger) getRecipeSeq.getSingleResult();
 
-        recipe.setId(toLong.longValue());
-        insertRecipe.setParameter("about", recipe.getAbout())
-                .setParameter("date", recipe.getDate())
-                .setParameter("language", recipe.getLang())
-                .setParameter("level", recipe.getLevel())
-                .setParameter("name", recipe.getName())
-                .setParameter("serve", recipe.getServe())
-                .setParameter("time", recipe.getTime())
-                .setParameter("type", recipe.getType())
-                .setParameter("user_id", recipe.getUserId())
-                .setParameter("visible", recipe.isVisible())
-                .setParameter("id", recipe.getId()).executeUpdate();
+        recipeEntity.setId(toLong.longValue());
+        insertRecipe.setParameter("about", recipeEntity.getAbout())
+                .setParameter("date", recipeEntity.getDate())
+                .setParameter("language", recipeEntity.getLang())
+                .setParameter("level", recipeEntity.getLevel())
+                .setParameter("name", recipeEntity.getName())
+                .setParameter("serve", recipeEntity.getServe())
+                .setParameter("time", recipeEntity.getTime())
+                .setParameter("type", recipeEntity.getType())
+                .setParameter("user_id", recipeEntity.getUserId())
+                .setParameter("visible", recipeEntity.isVisible())
+                .setParameter("id", recipeEntity.getId()).executeUpdate();
 
 //Save foodstuff or if exist get id and insert cook food
-        Set<CookFoodEntity> food = recipe.getCookFoodEntity();
-        for(CookFoodEntity f: food) {
+        Set<FoodEntity> food = recipeEntity.getFoodEntity();
+        for(FoodEntity f: food) {
             FoodstuffEntity resultFs;
             if (f.getFoodstuffEntity().getId()==0) {
                 resultFs = foodRepository.findByNameEqualsIgnoreCase(f.getFoodstuffEntity().getName());
                 if (resultFs == null) {
-                    insertFoodstuff.setParameter("name", f.getFoodstuffEntity().getName()).executeUpdate();
+                    insertFoodstuff
+                            .setParameter("name", f.getFoodstuffEntity().getName())
+                            .setParameter("pic", f.getFoodstuffEntity().getImage())
+                            .executeUpdate();
                     resultFs = foodRepository.findByNameEqualsIgnoreCase(f.getFoodstuffEntity().getName());
                 }
                 f.setFoodstuffEntity(resultFs);
             }
 
-            insertCookfood.setParameter("image_link",f.getImage())
+            insertFood
                     .setParameter("food_id", f.getFoodstuffEntity().getId())
                     .setParameter("measure", f.getMeasure())
-                    .setParameter("recipe_id", recipe.getId())
+                    .setParameter("recipe_id", recipeEntity.getId())
                     .setParameter("size", f.getSize())
                     .executeUpdate();
 
         }
 //save cook steps
-        recipe.getCookStepEntity().forEach((n) ->
-                insertCookstep.setParameter("image_link", n.getImage())
+        recipeEntity.getStepEntity().forEach(n ->
+                insertStep
+                        .setParameter("image", n.getImage())
                         .setParameter("step", n.getStep())
-                        .setParameter("step_number", n.getStepId())
-                        .setParameter("recipe_id", recipe.getId()).executeUpdate()
+                        .setParameter("step_number", n.getStepNumber())
+                        .setParameter("recipe_id", recipeEntity.getId())
+                        .executeUpdate()
         );
 // save links to dish images
-        recipe.getImageEntity().forEach((n) ->
-                insertImage.setParameter("image_link", n.getImage())
-                        .setParameter("recipe_id", recipe.getId()).executeUpdate()
+        recipeEntity.getImageEntity().forEach(n ->
+                insertImage
+                        .setParameter("image", n.getImage())
+                        .setParameter("recipe_id", recipeEntity.getId())
+                        .executeUpdate()
         );
     }
 }

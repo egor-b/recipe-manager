@@ -2,8 +2,8 @@ package com.foodcrunch.foodster.recipemanager.controller;
 
 import com.foodcrunch.foodster.recipemanager.exception.BadRequestException;
 import com.foodcrunch.foodster.recipemanager.exception.NotFoundException;
-import com.foodcrunch.foodster.recipemanager.model.ErrorResponse;
-import com.foodcrunch.foodster.recipemanager.model.Recipe;
+import com.foodcrunch.foodster.recipemanager.exception.ErrorResponse;
+import com.foodcrunch.foodster.recipemanager.model.entity.RecipeEntity;
 import com.foodcrunch.foodster.recipemanager.service.RecipeManagerService;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiResponse;
@@ -40,11 +40,11 @@ public class RecipeManagerController {
     @GetMapping(path = "")
     @ResponseStatus(HttpStatus.OK)
     @ApiOperation(value = "Retrieve recipes", notes = "Retrieve recipes in a row")
-    @ApiResponses(value = {@ApiResponse(code = 200, message = "", response = Recipe.class, responseContainer = "Recipe"),
+    @ApiResponses(value = {@ApiResponse(code = 200, message = "", response = RecipeEntity.class, responseContainer = "Recipe"),
             @ApiResponse(code = 404, message = "Recipe not found", response = NotFoundException.class),
             @ApiResponse(code = 400, message = "Missing or invalid request body", response = BadRequestException.class),
             @ApiResponse(code = 500, message = "Internal Server error")})
-    public Flux<Recipe> getRecipes(@RequestParam(value = "page", defaultValue = "0") int page) {
+    public Flux<RecipeEntity> getRecipes(@RequestParam(value = "page", defaultValue = "0") int page) {
         return recipeManagerService.getAllRecipesInRowByPageNumber(page)
                 .doOnNext(success ->
                         log.info("Recipe '{}' was returned. Id is {}", success.getName(), success.getId()))
@@ -56,11 +56,11 @@ public class RecipeManagerController {
     @GetMapping(path = "/{id}")
     @ResponseStatus(HttpStatus.OK)
     @ApiOperation(value = "Retrieve recipe", notes = "Search recipe by ID")
-    @ApiResponses(value = {@ApiResponse(code = 200, message = "", response = Recipe.class, responseContainer = "Recipe"),
+    @ApiResponses(value = {@ApiResponse(code = 200, message = "", response = RecipeEntity.class, responseContainer = "Recipe"),
             @ApiResponse(code = 404, message = "Recipe not found", response = NotFoundException.class),
             @ApiResponse(code = 400, message = "Missing or invalid request body", response = BadRequestException.class),
             @ApiResponse(code = 500, message = "Internal Server error")})
-    public Flux<Recipe> getRecipeById(@PathVariable(value = "id") Long recipeId) {
+    public Flux<RecipeEntity> getRecipeById(@PathVariable(value = "id") Long recipeId) {
         return recipeManagerService.retrieveRecipeById(recipeId)
                 .doOnNext(success ->
                         log.info("Recipe '{}' was returned. Id is {}", success.getName(), success.getId()))
@@ -72,16 +72,16 @@ public class RecipeManagerController {
     @PostMapping(path = "/search")
     @ResponseStatus(HttpStatus.OK)
     @ApiOperation(value = "Retrieve recipes", notes = "Recipes search by filter")
-    @ApiResponses(value = {@ApiResponse(code = 200, message = "", response = Recipe.class, responseContainer = "Recipe"),
+    @ApiResponses(value = {@ApiResponse(code = 200, message = "", response = RecipeEntity.class, responseContainer = "Recipe"),
             @ApiResponse(code = 404, message = "Recipes not found"),
             @ApiResponse(code = 400, message = "Missing or invalid request body"),
             @ApiResponse(code = 500, message = "Internal Server error")})
 
-    public Flux<Recipe> findAllByCriteria(@RequestParam(value = "page", defaultValue = "0") int pageNumber,
-                                          @RequestParam(value = "sort_field", defaultValue = "date") String sortKey,
-                                          @RequestParam(value = "page_size", defaultValue = "20") int pageSize,
-                                          @RequestParam(value = "order", defaultValue = "DESC") Sort.Direction sortOrder,
-                                          @RequestBody Map<String, String> body) {
+    public Flux<RecipeEntity> findAllByCriteria(@RequestParam(value = "page", defaultValue = "0") int pageNumber,
+                                                @RequestParam(value = "sort_field", defaultValue = "date") String sortKey,
+                                                @RequestParam(value = "page_size", defaultValue = "20") int pageSize,
+                                                @RequestParam(value = "order", defaultValue = "DESC") Sort.Direction sortOrder,
+                                                @RequestBody Map<String, String> body) {
         return recipeManagerService.findRecipesByCriteria(pageNumber,pageSize, sortKey, sortOrder, body)
                 .doOnNext(success ->
                         log.info("Recipe '" + success.getName() + "' was found. id = " + success.getId()))
@@ -92,15 +92,15 @@ public class RecipeManagerController {
     @GetMapping(path = "/user/{id}")
     @ResponseStatus(HttpStatus.OK)
     @ApiOperation(value = "Retrieve recipes", notes = "Recipes search by user ID")
-    @ApiResponses(value = {@ApiResponse(code = 200, message = "", response = Recipe.class, responseContainer = "Recipe"),
+    @ApiResponses(value = {@ApiResponse(code = 200, message = "", response = RecipeEntity.class, responseContainer = "Recipe"),
             @ApiResponse(code = 404, message = "Recipe not found"),
             @ApiResponse(code = 400, message = "Missing or invalid request body"),
             @ApiResponse(code = 500, message = "Internal Server error")})
-    public Flux<Recipe> getRecipeByUserId(@PathVariable(value = "id") long userId,
-                                          @RequestParam(value = "page", defaultValue = "0") int pageNumber,
-                                          @RequestParam(value = "page_size", defaultValue = "20") int pageSize,
-                                          @RequestParam(value = "sort_field", defaultValue = "date") String sortKey,
-                                          @RequestParam(value = "order", defaultValue = "ASC") Sort.Direction sortOrder) {
+    public Flux<RecipeEntity> getRecipeByUserId(@PathVariable(value = "id") long userId,
+                                                @RequestParam(value = "page", defaultValue = "0") int pageNumber,
+                                                @RequestParam(value = "page_size", defaultValue = "20") int pageSize,
+                                                @RequestParam(value = "sort_field", defaultValue = "date") String sortKey,
+                                                @RequestParam(value = "order", defaultValue = "ASC") Sort.Direction sortOrder) {
         return recipeManagerService.getRecipesByUserId(userId, pageNumber, pageSize, sortKey, sortOrder)
                 .doOnNext(success ->
                         log.info("Recipe '" + success.getName() + "' was found. id = " + success.getId() + ", userId = " + success.getUserId()))
@@ -111,24 +111,24 @@ public class RecipeManagerController {
     @Transactional
     @PostMapping(path = "save")
     @ResponseStatus(HttpStatus.CREATED)
-    public void saveRecipe(@Valid @RequestBody Recipe recipe) {
-        recipeManagerService.saveRecipe(recipe);
+    public void saveRecipe(@Valid @RequestBody RecipeEntity recipeEntity) {
+        recipeManagerService.saveRecipe(recipeEntity);
     }
 
     @ExceptionHandler({BadRequestException.class, MethodArgumentTypeMismatchException.class})
-    public final ResponseEntity<Recipe> badRequestHandleException(Exception e) {
+    public final ResponseEntity<RecipeEntity> badRequestHandleException(Exception e) {
         ErrorResponse errorResponse = new ErrorResponse("Bad request", e.getLocalizedMessage());
         return new ResponseEntity(errorResponse, HttpStatus.BAD_REQUEST);
     }
 
     @ExceptionHandler({NullPointerException.class})
-    public final ResponseEntity<Recipe> processNulPointerThenReturnBadRequestException(Exception e) {
+    public final ResponseEntity<RecipeEntity> processNulPointerThenReturnBadRequestException(Exception e) {
         ErrorResponse errorResponse = new ErrorResponse("Bad request", "Was sent incorrect request.");
         return new ResponseEntity(errorResponse, HttpStatus.BAD_REQUEST);
     }
 
     @ExceptionHandler(NotFoundException.class)
-    public final ResponseEntity<Recipe> notFoundHandleException(NotFoundException e) {
+    public final ResponseEntity<RecipeEntity> notFoundHandleException(NotFoundException e) {
         ErrorResponse errorResponse = new ErrorResponse("Record not found", e.getLocalizedMessage());
         return new ResponseEntity(errorResponse, HttpStatus.NOT_FOUND);
     }

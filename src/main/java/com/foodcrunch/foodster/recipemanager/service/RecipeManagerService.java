@@ -3,7 +3,7 @@ package com.foodcrunch.foodster.recipemanager.service;
 import com.foodcrunch.foodster.recipemanager.constant.LogLevel;
 import com.foodcrunch.foodster.recipemanager.exception.BadRequestException;
 import com.foodcrunch.foodster.recipemanager.exception.NotFoundException;
-import com.foodcrunch.foodster.recipemanager.model.Recipe;
+import com.foodcrunch.foodster.recipemanager.model.entity.RecipeEntity;
 import com.foodcrunch.foodster.recipemanager.repository.RecipeInterface;
 import com.foodcrunch.foodster.recipemanager.repository.RecipeRepository;
 import lombok.RequiredArgsConstructor;
@@ -30,22 +30,22 @@ public class RecipeManagerService {
 
     private final RecipeInterface recipeInterface;
 
-    public Flux<Recipe> getAllRecipesInRowByPageNumber(Integer pageNumber) {
+    public Flux<RecipeEntity> getAllRecipesInRowByPageNumber(Integer pageNumber) {
         PageRequest page = PageRequest.of(pageNumber, 20);
         return Flux.fromIterable(recipeRepository.findAll(page).getContent());
     }
 
-    public Flux<Recipe> retrieveRecipeById(Long id) {
-        final Recipe recipe = recipeRepository.findById(id).orElseGet(() -> null);
+    public Flux<RecipeEntity> retrieveRecipeById(Long id) {
+        final RecipeEntity recipeEntity = recipeRepository.findById(id).orElseGet(() -> null);
 
-        if (recipe == null) {
+        if (recipeEntity == null) {
             String message = buildLogEvent(RECIPE_NOT_FOUND, LogLevel.ERROR, null, id);
             return Flux.error(new NotFoundException(message));
         }
-        return Flux.just(recipe);
+        return Flux.just(recipeEntity);
     }
 
-    public Flux<Recipe> findRecipesByCriteria(int pageNumber, int pageSize, String sortKey, Sort.Direction sortOrder, Map<String, String> criterias) {
+    public Flux<RecipeEntity> findRecipesByCriteria(int pageNumber, int pageSize, String sortKey, Sort.Direction sortOrder, Map<String, String> criterias) {
         if (pageSize>100) {
             String message = buildLogEvent(TOO_MANY_RECIPES, LogLevel.ERROR, null, pageSize);
             return Flux.error(new BadRequestException(message));
@@ -54,7 +54,7 @@ public class RecipeManagerService {
         return Flux.fromIterable(recipeInterface.findByPagingCriteria(page, criterias));
     }
 
-    public Flux<Recipe> getRecipesByUserId(Long userId, int pageNumber, int pageSize, String sortKey, Sort.Direction sortOrder/*, Map<String, String> criterias*/) {
+    public Flux<RecipeEntity> getRecipesByUserId(Long userId, int pageNumber, int pageSize, String sortKey, Sort.Direction sortOrder/*, Map<String, String> criterias*/) {
         if (pageSize>100) {
             String message = buildLogEvent(TOO_MANY_RECIPES, LogLevel.ERROR, null, pageSize);
             return Flux.error(new BadRequestException(message));
@@ -63,14 +63,14 @@ public class RecipeManagerService {
         return Flux.fromIterable(recipeRepository.findByUserIdEquals(page, userId));
     }
 
-    public Flux<Object> saveRecipe(Recipe recipe) {
-        if (recipe.getCookFoodEntity().size()<=2) {
-            return Flux.error(new BadRequestException(buildLogEvent(LOW_FOOD, LogLevel.ERROR, null, recipe.getCookFoodEntity().size())));
+    public Flux<Object> saveRecipe(RecipeEntity recipeEntity) {
+        if (recipeEntity.getFoodEntity().size()<=2) {
+            return Flux.error(new BadRequestException(buildLogEvent(LOW_FOOD, LogLevel.ERROR, null, recipeEntity.getFoodEntity().size())));
         }
-        if (recipe.getCookStepEntity().size()<=3) {
-            return Flux.error(new BadRequestException(buildLogEvent(LOW_STEPS, LogLevel.ERROR, null, recipe.getCookStepEntity().size())));
+        if (recipeEntity.getStepEntity().size()<=3) {
+            return Flux.error(new BadRequestException(buildLogEvent(LOW_STEPS, LogLevel.ERROR, null, recipeEntity.getStepEntity().size())));
         }
-        recipeInterface.saveRecipe(recipe);
+        recipeInterface.saveRecipe(recipeEntity);
         return null;
     }
 

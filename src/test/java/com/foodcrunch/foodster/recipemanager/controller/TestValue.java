@@ -1,10 +1,10 @@
 package com.foodcrunch.foodster.recipemanager.controller;
 
-import com.foodcrunch.foodster.recipemanager.model.CookFoodEntity;
-import com.foodcrunch.foodster.recipemanager.model.CookStepEntity;
-import com.foodcrunch.foodster.recipemanager.model.FoodstuffEntity;
-import com.foodcrunch.foodster.recipemanager.model.ImageEntity;
-import com.foodcrunch.foodster.recipemanager.model.Recipe;
+import com.foodcrunch.foodster.recipemanager.model.entity.FoodEntity;
+import com.foodcrunch.foodster.recipemanager.model.entity.StepEntity;
+import com.foodcrunch.foodster.recipemanager.model.entity.FoodstuffEntity;
+import com.foodcrunch.foodster.recipemanager.model.entity.ImageEntity;
+import com.foodcrunch.foodster.recipemanager.model.entity.RecipeEntity;
 import reactor.core.publisher.Flux;
 
 import java.util.ArrayList;
@@ -14,33 +14,35 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import static org.mockito.ArgumentMatchers.any;
+
 public class TestValue {
 
     public static long getValidId = 1;
 
-    public static List<Recipe> getListValidRecipes(Integer count) {
+    public static List<RecipeEntity> getListValidRecipes(Integer count) {
 
-        List<Recipe> recipes = new ArrayList<>();
+        List<RecipeEntity> recipeEntities = new ArrayList<>();
 
         for(int i = 0; i < count; i++) {
-            Recipe recipe = new Recipe();
-            recipe.setId(i);
-            recipe.setName("Meatball_" + i);
-            recipe.setTime(65132+i);
-            recipe.setServe(i);
-            recipe.setLevel(3.5);
-            recipe.setType("type_" + i);
-            recipe.setAbout("About_" + i);
-            recipe.setUserId(i);
-            recipe.setLang("EN");
-            recipe.setVisible(true);
-            recipes.add(recipe);
+            RecipeEntity recipeEntity = new RecipeEntity();
+            recipeEntity.setId(i);
+            recipeEntity.setName("Meatball_" + i);
+            recipeEntity.setTime(65132+i);
+            recipeEntity.setServe(i);
+            recipeEntity.setLevel(3.5);
+            recipeEntity.setType("type_" + i);
+            recipeEntity.setAbout("About_" + i);
+            recipeEntity.setUserId(i);
+            recipeEntity.setLang("EN");
+            recipeEntity.setVisible(true);
+            recipeEntities.add(recipeEntity);
         }
 
-        return recipes;
+        return recipeEntities;
     }
 
-    public static Recipe getValidRecipe() {
+    public static RecipeEntity getValidRecipe() {
         return getListValidRecipes(1).get(0);
     }
 
@@ -64,54 +66,54 @@ public class TestValue {
         return Flux.fromIterable(foodstuffEntityList);
     }
 
-    public static Recipe getRecipe(Integer numOfIng, Integer numOfSteps) {
-        Set<CookFoodEntity> cookFoodEntities = new HashSet<>();
-        Set<CookStepEntity> cookStepEntities = new HashSet<>();
+    public static RecipeEntity getRecipe(Integer numOfIng, Integer numOfSteps) {
+        Set<FoodEntity> cookFoodEntities = new HashSet<>();
+        Set<StepEntity> cookStepEntities = new HashSet<>();
         Set<ImageEntity> imageEntities = new HashSet<>();
 
-        Recipe recipe = new Recipe();
+        RecipeEntity recipeEntity = new RecipeEntity();
 
-        recipe.setName("Meatball");
-        recipe.setTime(20);
-        recipe.setServe(1);
-        recipe.setLevel(3.5);
-        recipe.setType("type");
-        recipe.setAbout("About");
-        recipe.setUserId(1);
-        recipe.setLang("EN");
-        recipe.setVisible(true);
+        recipeEntity.setName("Meatball");
+        recipeEntity.setTime(20);
+        recipeEntity.setServe(1);
+        recipeEntity.setLevel(3.5);
+        recipeEntity.setType("type");
+        recipeEntity.setAbout("About");
+        recipeEntity.setUserId(1);
+        recipeEntity.setLang("EN");
+        recipeEntity.setVisible(true);
 
         for(int i = 0; i < numOfIng; i++) {
             FoodstuffEntity foodstuffEntity = new FoodstuffEntity();
-            CookFoodEntity cookFoodEntitie = new CookFoodEntity();
+            FoodEntity cookFoodEntitie = new FoodEntity();
             foodstuffEntity.setName("bla" + i);
+            foodstuffEntity.setImage(new byte[] { });
             cookFoodEntitie.setMeasure("mgr");
             cookFoodEntitie.setSize(2+i);
-            cookFoodEntitie.setImage("https://" + i + ".com");
             cookFoodEntitie.setFoodstuffEntity(foodstuffEntity);
             cookFoodEntities.add(cookFoodEntitie);
         }
 
-        recipe.setCookFoodEntity(cookFoodEntities);
+        recipeEntity.setFoodEntity(cookFoodEntities);
 
         for(int i = 0; i < numOfSteps; i++) {
-            CookStepEntity cookStepEntity = new CookStepEntity();
-            cookStepEntity.setStepId(i);
-            cookStepEntity.setStep("Step by step " + i);
-            cookStepEntity.setImage("https://" + i + ".com");
-            cookStepEntities.add(cookStepEntity);
+            StepEntity stepEntity = new StepEntity();
+            stepEntity.setStepNumber(i);
+            stepEntity.setStep("Step by step " + i);
+            stepEntity.setImage(new byte[] { });
+            cookStepEntities.add(stepEntity);
         }
 
-        recipe.setCookStepEntity(cookStepEntities);
+        recipeEntity.setStepEntity(cookStepEntities);
 
         for (int i = 0; i < 3; i++) {
             ImageEntity imageEntity = new ImageEntity();
-            imageEntity.setImage("https://" + i + ".com");
+            imageEntity.setImage(new byte[] { });
             imageEntities.add(imageEntity);
         }
 
-        recipe.setImageEntity(imageEntities);
+        recipeEntity.setImageEntity(imageEntities);
 
-        return recipe;
+        return recipeEntity;
     }
 }

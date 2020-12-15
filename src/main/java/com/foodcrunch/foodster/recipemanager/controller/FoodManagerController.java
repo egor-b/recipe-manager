@@ -1,9 +1,9 @@
 package com.foodcrunch.foodster.recipemanager.controller;
 
 import com.foodcrunch.foodster.recipemanager.exception.BadRequestException;
-import com.foodcrunch.foodster.recipemanager.model.ErrorResponse;
-import com.foodcrunch.foodster.recipemanager.model.FoodstuffEntity;
-import com.foodcrunch.foodster.recipemanager.model.Recipe;
+import com.foodcrunch.foodster.recipemanager.exception.ErrorResponse;
+import com.foodcrunch.foodster.recipemanager.model.entity.FoodstuffEntity;
+import com.foodcrunch.foodster.recipemanager.model.entity.RecipeEntity;
 import com.foodcrunch.foodster.recipemanager.service.RecipeFoodManagerService;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiResponse;
@@ -42,7 +42,7 @@ public class FoodManagerController {
     }
 
     @ExceptionHandler({BadRequestException.class, MethodArgumentTypeMismatchException.class})
-    public final ResponseEntity<Recipe> badRequestHandleException(Exception e) {
+    public final ResponseEntity<RecipeEntity> badRequestHandleException(Exception e) {
         ErrorResponse errorResponse = new ErrorResponse("Bad request", e.getLocalizedMessage());
         return new ResponseEntity(errorResponse, HttpStatus.BAD_REQUEST);
     }

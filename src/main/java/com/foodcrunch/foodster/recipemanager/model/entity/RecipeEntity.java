@@ -1,4 +1,4 @@
-package com.foodcrunch.foodster.recipemanager.model;
+package com.foodcrunch.foodster.recipemanager.model.entity;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Data;
@@ -21,7 +21,7 @@ import java.util.Set;
 @Entity
 @Data
 @Table(name = "RECIPE")
-public class Recipe implements Serializable {
+public class RecipeEntity implements Serializable {
 
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "RECIPE_SEQ")
@@ -62,12 +62,12 @@ public class Recipe implements Serializable {
     @JsonProperty("food")
     @OneToMany(fetch = FetchType.EAGER,cascade = CascadeType.ALL, orphanRemoval = true)
     @JoinColumn(name = "RECIPE_ID", referencedColumnName = "ID")
-    private Set<CookFoodEntity> cookFoodEntity;
+    private Set<FoodEntity> foodEntity;
 
     @JsonProperty("step")
     @OneToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL, orphanRemoval = true)
     @JoinColumn(name = "RECIPE_ID", referencedColumnName = "ID")
-    private Set<CookStepEntity> cookStepEntity;
+    private Set<StepEntity> stepEntity;
 
     @JsonProperty("image")
     @OneToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL, orphanRemoval = true)

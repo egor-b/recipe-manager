@@ -2,7 +2,7 @@ package com.foodcrunch.foodster.recipemanager.service;
 
 import com.foodcrunch.foodster.recipemanager.constant.LogLevel;
 import com.foodcrunch.foodster.recipemanager.exception.BadRequestException;
-import com.foodcrunch.foodster.recipemanager.model.FoodstuffEntity;
+import com.foodcrunch.foodster.recipemanager.model.entity.FoodstuffEntity;
 import com.foodcrunch.foodster.recipemanager.repository.FoodRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;

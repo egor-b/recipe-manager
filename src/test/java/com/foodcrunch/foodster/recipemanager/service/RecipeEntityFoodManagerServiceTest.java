@@ -1,8 +1,7 @@
 package com.foodcrunch.foodster.recipemanager.service;
 
 import com.foodcrunch.foodster.recipemanager.exception.BadRequestException;
-import com.foodcrunch.foodster.recipemanager.model.FoodstuffEntity;
-import com.foodcrunch.foodster.recipemanager.model.Recipe;
+import com.foodcrunch.foodster.recipemanager.model.entity.FoodstuffEntity;
 import com.foodcrunch.foodster.recipemanager.repository.FoodRepository;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -19,7 +18,7 @@ import reactor.test.StepVerifier;
 import static org.mockito.Mockito.*;
 
 @RunWith(MockitoJUnitRunner.class)
-public class RecipeFoodManagerServiceTest {
+public class RecipeEntityFoodManagerServiceTest {
 
     @InjectMocks
     private RecipeFoodManagerService recipeFoodManagerService;

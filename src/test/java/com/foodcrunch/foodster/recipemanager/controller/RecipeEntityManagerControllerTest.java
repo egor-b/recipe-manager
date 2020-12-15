@@ -2,7 +2,7 @@ package com.foodcrunch.foodster.recipemanager.controller;
 
 import com.foodcrunch.foodster.recipemanager.exception.BadRequestException;
 import com.foodcrunch.foodster.recipemanager.exception.NotFoundException;
-import com.foodcrunch.foodster.recipemanager.model.Recipe;
+import com.foodcrunch.foodster.recipemanager.model.entity.RecipeEntity;
 import com.foodcrunch.foodster.recipemanager.service.RecipeManagerService;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -25,7 +25,7 @@ import static org.springframework.security.test.web.reactive.server.SecurityMock
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @WebFluxTest(RecipeManagerController.class)
-public class RecipeManagerControllerTest {
+public class RecipeEntityManagerControllerTest {
 
     @Autowired
     private WebTestClient webTestClient;
@@ -137,16 +137,16 @@ public class RecipeManagerControllerTest {
     @Test
     @WithMockUser
     public void whenValidRecipe_thenSaveToDb() {
-        Recipe recipe = TestValue.getRecipe(0, 5);
+        RecipeEntity recipeEntity = TestValue.getRecipe(0, 5);
         webTestClient.mutateWith(csrf())
                 .post()
                 .uri("/v1/recipe/save")
                 .accept(MediaType.APPLICATION_JSON)
-                .bodyValue(recipe)
+                .bodyValue(recipeEntity)
                 .exchange()
                 .expectStatus()
                 .isCreated();
-        verify(recipeManagerService, times(1)).saveRecipe(recipe);
+        verify(recipeManagerService, times(1)).saveRecipe(recipeEntity);
     }
 
     @Test
