@@ -8,7 +8,7 @@ import org.springframework.stereotype.Repository;
 import java.util.Map;
 
 @Repository
-public interface RecipeInterface {
+public interface RecipeRepositoryInterface {
     Page<RecipeEntity> findByPagingCriteria(Pageable pageable, Map<String, String> param);
     void saveRecipe(RecipeEntity recipeEntity);
 }

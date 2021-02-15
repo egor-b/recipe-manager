@@ -3,7 +3,7 @@ package com.foodcrunch.foodster.recipemanager.service;
 import com.foodcrunch.foodster.recipemanager.exception.BadRequestException;
 import com.foodcrunch.foodster.recipemanager.exception.NotFoundException;
 import com.foodcrunch.foodster.recipemanager.model.entity.RecipeEntity;
-import com.foodcrunch.foodster.recipemanager.repository.RecipeInterface;
+import com.foodcrunch.foodster.recipemanager.repository.RecipeRepositoryInterface;
 import com.foodcrunch.foodster.recipemanager.repository.RecipeRepository;
 import org.assertj.core.api.Assertions;
 import org.junit.Test;
@@ -34,7 +34,10 @@ public class RecipeEntityManagerServiceTest {
     private RecipeRepository recipeRepository;
 
     @Mock
-    private RecipeInterface recipeInterface;
+    private RecipeRepositoryInterface recipeRepositoryInterface;
+
+    @Mock
+    private LogService logService;
 
     @Test
     public void whenGetNumberOfPage_thenReturnListOfRecipes() {
@@ -75,13 +78,13 @@ public class RecipeEntityManagerServiceTest {
         PageRequest page = PageRequest.of(0, 20, Sort.by(Sort.Direction.ASC, "date"));
         final Page<RecipeEntity> recipesPage = new PageImpl<>(TestValue.getListValidRecipes(2,0, 0));
 
-        when(recipeInterface.findByPagingCriteria(page, TestValue.getBodyOfCriteria())).thenReturn(recipesPage);
+        when(recipeRepositoryInterface.findByPagingCriteria(page, TestValue.getBodyOfCriteria())).thenReturn(recipesPage);
         Flux<RecipeEntity> result = recipeManagerService.findRecipesByCriteria(0,20, "date", Sort.Direction.ASC, TestValue.getBodyOfCriteria());
         StepVerifier.create(result)
                 .expectNextMatches(r -> r.getName().equals("Meatball"))
                 .expectNextMatches(r -> r.getName().equals("Meatball"))
                 .verifyComplete();
-        verify(recipeInterface, times(1)).findByPagingCriteria(page, TestValue.getBodyOfCriteria());
+        verify(recipeRepositoryInterface, times(1)).findByPagingCriteria(page, TestValue.getBodyOfCriteria());
     }
 
     @Test
@@ -89,7 +92,7 @@ public class RecipeEntityManagerServiceTest {
         PageRequest page = PageRequest.of(0, 20, Sort.by(Sort.Direction.ASC, "date"));
         Flux<RecipeEntity> result = recipeManagerService.findRecipesByCriteria(0,9999, "date", Sort.Direction.ASC, TestValue.getBodyOfCriteria());
         StepVerifier.create(result).expectError(BadRequestException.class).verify();
-        verify(recipeInterface, times(0)).findByPagingCriteria(page, TestValue.getBodyOfCriteria());
+        verify(recipeRepositoryInterface, times(0)).findByPagingCriteria(page, TestValue.getBodyOfCriteria());
     }
 
 }

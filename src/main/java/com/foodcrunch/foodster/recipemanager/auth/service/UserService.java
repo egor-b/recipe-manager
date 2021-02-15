@@ -11,7 +11,6 @@ import com.google.firebase.auth.FirebaseToken;
 import com.google.firebase.auth.UserRecord;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.stereotype.Service;
 import reactor.core.publisher.Flux;
 
@@ -21,14 +20,14 @@ import java.util.Set;
 @Slf4j
 @Service
 @RequiredArgsConstructor
-public class UserService implements UserDetailsService {
+public class UserService {
 
     private final UserRepository userRepository;
 
-    public Flux<UserEntity> loadUserByUsername(String username) {
-        UserEntity userEntity = userRepository.findByUsername(username);
+    public Flux<UserEntity> loadUserByUid(String uid) {
+        UserEntity userEntity = userRepository.findByUid(uid);
         if (userEntity == null) {
-            String message = String.format("User was not found by username {}", username);
+            String message = String.format("User was not found by uid {}", uid);
             log.info(message);
             return Flux.error(new UserNotFoundException(message));
         }
@@ -45,26 +44,26 @@ public class UserService implements UserDetailsService {
         return Flux.just(userEntity);
     }
 
-    public void createNewUser(User user) {
-        try {
-            UserRecord.CreateRequest userRequest = new UserRecord.CreateRequest()
-                    .setEmail(user.getEmail())
-                    .setPassword(user.getPassword())
-                    .setPhoneNumber(user.getPhone())
-                    .setDisplayName(user.getName() + " " + user.getLName())
-                    .setPhotoUrl(user.getPic())
-                    .setDisabled(user.isDisable());
-
-            UserRecord userRecord = FirebaseAuth.getInstance().createUser(userRequest);
-
-            user.setUid(userRecord.getUid());
-
-            userRepository.save(convertUserModelToEntity(user));
-            emailVerificationRequest(user.getEmail());
-        } catch (FirebaseAuthException err) {
-            err.getStackTrace();
-        }
-    }
+//    public void createNewUser(User user) {
+//        try {
+//            UserRecord.CreateRequest userRequest = new UserRecord.CreateRequest()
+//                    .setEmail(user.getEmail())
+//                    .setPassword(user.getPassword())
+//                    .setPhoneNumber(user.getPhone())
+//                    .setDisplayName(user.getName() + " " + user.getLName())
+//                    .setPhotoUrl(user.getPic())
+//                    .setDisabled(user.isDisable());
+//
+//            UserRecord userRecord = FirebaseAuth.getInstance().createUser(userRequest);
+//
+//            user.setUid(userRecord.getUid());
+//
+//            userRepository.save(convertUserModelToEntity(user));
+//            emailVerificationRequest(user.getEmail());
+//        } catch (FirebaseAuthException err) {
+//            err.getStackTrace();
+//        }
+//    }
 
     public void updateUser(User user) {
         try {

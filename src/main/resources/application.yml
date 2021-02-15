@@ -10,15 +10,15 @@ spring:
       accept-case-insensitive-properties: true
 
   datasource:
-    url: jdbc:postgresql://ec2-3-234-169-147.compute-1.amazonaws.com:5432/d1se6j1viek0a3
-    username: rbhacpohxzggkh
-    password: dfb5d5f47ddc2ecee0ee477576a3e96c4e3330e0f7c01d268da0f17b2b826568
+    url: jdbc:postgresql://ec2-34-203-155-237.compute-1.amazonaws.com:5432/d7pntfk4v8p94d
+    username: crqbgdhunawynu
+    password: 3a083ec451cb103fb944e947be4cfbae43be02d7bfeaf9991a23183085b0601b
 
   jpa:
     show-sql: false
     properties:
       hibernate:
         default_schema: recipe
-        dialect: org.hibernate.dialect.PostgreSQLDialect
+        dialect: 'org.hibernate.dialect.PostgreSQLDialect'
     hibernate:
       ddl-auto: update

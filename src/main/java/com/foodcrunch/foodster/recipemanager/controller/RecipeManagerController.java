@@ -1,5 +1,7 @@
 package com.foodcrunch.foodster.recipemanager.controller;
 
+import com.foodcrunch.foodster.recipemanager.auth.model.User;
+import com.foodcrunch.foodster.recipemanager.auth.service.UserService;
 import com.foodcrunch.foodster.recipemanager.exception.BadRequestException;
 import com.foodcrunch.foodster.recipemanager.exception.NotFoundException;
 import com.foodcrunch.foodster.recipemanager.exception.ErrorResponse;

@@ -8,7 +8,7 @@ import org.springframework.stereotype.Repository;
 @Repository
 public interface UserRepository extends JpaRepository<UserEntity, Long> {
 
-    UserEntity findByUsername(String username);
+    UserEntity findByUid(String uid);
 
     @Query("UPDATE UserEntity ue SET ue.email = ?1 WHERE ue.uid = ?2")
     void updateUserEmail(String email, String uid);

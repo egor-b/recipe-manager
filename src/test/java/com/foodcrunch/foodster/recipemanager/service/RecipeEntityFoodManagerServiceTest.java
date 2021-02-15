@@ -15,7 +15,10 @@ import org.springframework.data.domain.Sort;
 import reactor.core.publisher.Flux;
 import reactor.test.StepVerifier;
 
-import static org.mockito.Mockito.*;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
+
 
 @RunWith(MockitoJUnitRunner.class)
 public class RecipeEntityFoodManagerServiceTest {
@@ -25,6 +28,9 @@ public class RecipeEntityFoodManagerServiceTest {
 
     @Mock
     private FoodRepository foodRepository;
+
+    @Mock
+    private LogService logService;
 
     @Test
     public void whenGetValidString_thenReturnFoodList() {
