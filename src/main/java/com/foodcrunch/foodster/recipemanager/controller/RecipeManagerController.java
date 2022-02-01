@@ -1,10 +1,8 @@
 package com.foodcrunch.foodster.recipemanager.controller;
 
-import com.foodcrunch.foodster.recipemanager.auth.model.User;
-import com.foodcrunch.foodster.recipemanager.auth.service.UserService;
 import com.foodcrunch.foodster.recipemanager.exception.BadRequestException;
-import com.foodcrunch.foodster.recipemanager.exception.NotFoundException;
 import com.foodcrunch.foodster.recipemanager.exception.ErrorResponse;
+import com.foodcrunch.foodster.recipemanager.exception.NotFoundException;
 import com.foodcrunch.foodster.recipemanager.model.entity.RecipeEntity;
 import com.foodcrunch.foodster.recipemanager.service.RecipeManagerService;
 import io.swagger.annotations.ApiOperation;
@@ -15,15 +13,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.ExceptionHandler;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.ResponseStatus;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.method.annotation.MethodArgumentTypeMismatchException;
 import reactor.core.publisher.Flux;
 
@@ -63,7 +53,8 @@ public class RecipeManagerController {
             @ApiResponse(code = 400, message = "Missing or invalid request body", response = BadRequestException.class),
             @ApiResponse(code = 500, message = "Internal Server error")})
     public Flux<RecipeEntity> getRecipeById(@PathVariable(value = "id") Long recipeId) {
-        return recipeManagerService.retrieveRecipeById(recipeId)
+        Flux<RecipeEntity> d = recipeManagerService.retrieveRecipeById(recipeId);
+        return d
                 .doOnNext(success ->
                         log.info("Recipe '{}' was returned. Id is {}", success.getName(), success.getId()))
                 .doOnError(error ->
@@ -98,12 +89,13 @@ public class RecipeManagerController {
             @ApiResponse(code = 404, message = "Recipe not found"),
             @ApiResponse(code = 400, message = "Missing or invalid request body"),
             @ApiResponse(code = 500, message = "Internal Server error")})
-    public Flux<RecipeEntity> getRecipeByUserId(@PathVariable(value = "id") long userId,
+    public Flux<RecipeEntity> getRecipeByUserId(@PathVariable(value = "id") String userId,
                                                 @RequestParam(value = "page", defaultValue = "0") int pageNumber,
                                                 @RequestParam(value = "page_size", defaultValue = "20") int pageSize,
                                                 @RequestParam(value = "sort_field", defaultValue = "date") String sortKey,
-                                                @RequestParam(value = "order", defaultValue = "ASC") Sort.Direction sortOrder) {
-        return recipeManagerService.getRecipesByUserId(userId, pageNumber, pageSize, sortKey, sortOrder)
+                                                @RequestParam(value = "order", defaultValue = "ASC") Sort.Direction sortOrder,
+                                                @RequestBody Map<String, String> body) {
+        return recipeManagerService.getRecipesByUserId(userId, pageNumber, pageSize, sortKey, sortOrder, body)
                 .doOnNext(success ->
                         log.info("Recipe '" + success.getName() + "' was found. id = " + success.getId() + ", userId = " + success.getUserId()))
                 .doOnError(error ->

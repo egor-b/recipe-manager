@@ -18,7 +18,8 @@ import static org.mockito.ArgumentMatchers.any;
 
 public class TestValue {
 
-    public static long getValidId = 1;
+    public static String getValidId = "1";
+    public static long getValidLongId = 1;
 
     public static List<RecipeEntity> getListValidRecipes(Integer count) {
 
@@ -87,7 +88,7 @@ public class TestValue {
             FoodstuffEntity foodstuffEntity = new FoodstuffEntity();
             FoodEntity cookFoodEntitie = new FoodEntity();
             foodstuffEntity.setName("bla" + i);
-            foodstuffEntity.setImage(new byte[] { });
+            foodstuffEntity.setImage("");
             cookFoodEntitie.setMeasure("mgr");
             cookFoodEntitie.setSize(2+i);
             cookFoodEntitie.setFoodstuffEntity(foodstuffEntity);
@@ -100,7 +101,7 @@ public class TestValue {
             StepEntity stepEntity = new StepEntity();
             stepEntity.setStepNumber(i);
             stepEntity.setStep("Step by step " + i);
-            stepEntity.setImage(new byte[] { });
+            stepEntity.setImage("");
             cookStepEntities.add(stepEntity);
         }
 
@@ -108,7 +109,7 @@ public class TestValue {
 
         for (int i = 0; i < 3; i++) {
             ImageEntity imageEntity = new ImageEntity();
-            imageEntity.setImage(new byte[] { });
+            imageEntity.setImage("");
             imageEntities.add(imageEntity);
         }
 

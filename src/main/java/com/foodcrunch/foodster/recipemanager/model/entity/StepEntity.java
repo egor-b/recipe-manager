@@ -29,7 +29,7 @@ public class StepEntity implements Serializable {
     private String step;
 
     @JsonProperty("pic")
-    @Column(name = "COOK_PIC_BYTE")
-    private byte[] image;
+    @Column(name = "IMAGE_REFERENCE")
+    private String image;
 
 }

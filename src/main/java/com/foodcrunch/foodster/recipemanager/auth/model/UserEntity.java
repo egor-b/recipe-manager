@@ -22,7 +22,7 @@ public class UserEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
-    private UUID id;
+    private long id;
 
     @Column(name = "UID", nullable = false, unique = true)
     private String uid;
@@ -46,15 +46,18 @@ public class UserEntity {
     private String phone;
 
     @Column(name = "PIC")
-    private String pic = "pic_template.jpeg";
+    private String pic;
 
-    @Column(name = "DISABLE", nullable = false)
-    private boolean disable = false;
+    @Column(name = "ACCOUNT_TYPE")
+    private String accountType;
 
-    @ManyToMany(fetch = FetchType.EAGER)
-    @JoinTable(name = "USER_ROLE", schema = "USERS",
-            joinColumns = @JoinColumn(name = "USER_ID", referencedColumnName = "ID"),
-            inverseJoinColumns = @JoinColumn(name = "ROLE_ID", referencedColumnName = "ID"))
-    private Set<RoleEntity> role;
+    @Column(name = "IS_DISABLE", nullable = false)
+    private boolean isDisable = false;
+
+//    @ManyToMany(fetch = FetchType.EAGER)
+//    @JoinTable(name = "USER_ROLE", schema = "USERS",
+//            joinColumns = @JoinColumn(name = "USER_ID", referencedColumnName = "ID"),
+//            inverseJoinColumns = @JoinColumn(name = "ROLE_ID", referencedColumnName = "ID"))
+//    private Set<RoleEntity> role;
 
 }

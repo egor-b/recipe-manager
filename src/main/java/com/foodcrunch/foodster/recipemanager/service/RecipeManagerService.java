@@ -1,6 +1,5 @@
 package com.foodcrunch.foodster.recipemanager.service;
 
-import com.foodcrunch.foodster.recipemanager.auth.model.User;
 import com.foodcrunch.foodster.recipemanager.auth.service.UserService;
 import com.foodcrunch.foodster.recipemanager.constant.LogLevel;
 import com.foodcrunch.foodster.recipemanager.exception.BadRequestException;
@@ -8,8 +7,6 @@ import com.foodcrunch.foodster.recipemanager.exception.NotFoundException;
 import com.foodcrunch.foodster.recipemanager.model.entity.RecipeEntity;
 import com.foodcrunch.foodster.recipemanager.repository.RecipeRepositoryInterface;
 import com.foodcrunch.foodster.recipemanager.repository.RecipeRepository;
-import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.auth.FirebaseAuthException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.PageRequest;
@@ -17,8 +14,6 @@ import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import reactor.core.publisher.Flux;
 
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Map;
 
 import static com.foodcrunch.foodster.recipemanager.constant.ExceptionsConstants.RECIPE_NOT_FOUND;
@@ -62,13 +57,18 @@ public class RecipeManagerService {
         return Flux.fromIterable(recipeRepositoryInterface.findByPagingCriteria(page, criterias));
     }
 
-    public Flux<RecipeEntity> getRecipesByUserId(Long userId, int pageNumber, int pageSize, String sortKey, Sort.Direction sortOrder/*, Map<String, String> criterias*/) {
+    public Flux<RecipeEntity> getRecipesByUserId(String userId, int pageNumber, int pageSize, String sortKey, Sort.Direction sortOrder, Map<String, String> criterias) {
         if (pageSize>100) {
             String message = logService.buildLogEvent(TOO_MANY_RECIPES, LogLevel.ERROR, null, pageSize);
             return Flux.error(new BadRequestException(message));
         }
         PageRequest page = PageRequest.of(pageNumber, pageSize, Sort.by(sortOrder, sortKey));
-        return Flux.fromIterable(recipeRepository.findByUserIdEquals(page, userId));
+        if (criterias.isEmpty()) {
+            return Flux.fromIterable(recipeRepository.findByUserIdEquals(page, userId));
+        } else {
+            return Flux.fromIterable(recipeRepositoryInterface.findByPagingCriteria(page, criterias));
+        }
+
     }
 
     public Flux<Object> saveRecipe(RecipeEntity recipeEntity) {

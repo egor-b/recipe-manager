@@ -37,7 +37,7 @@ public class RecipeEntity implements Serializable {
     @Column(name = "SERVE", nullable = false)
     private int serve;
 
-    @Column(name = "LEVEL", nullable = false)
+    @Column(name = "LEVEL", nullable = true)
     private double level;
 
     @Column(name = "TYPE", nullable = false)
@@ -50,8 +50,8 @@ public class RecipeEntity implements Serializable {
     @Column(name = "DATE", nullable = false)
     private Date date = new Date();
 
-    @Column(name = "USER_ID", nullable = false)
-    private long userId;
+    @Column(name = "USER_ID", nullable = true)
+    private String userId;
 
     @Column(name = "VISIBLE", nullable = false)
     private boolean visible;

@@ -1,6 +1,5 @@
 package com.foodcrunch.foodster.recipemanager.model.entity;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 import javax.persistence.CascadeType;
@@ -41,7 +40,7 @@ public class FoodEntity implements Serializable {
 
     public FoodEntity() {}
 
-    @JsonIgnore
+//    @JsonIgnore
     public long getId() { return id; }
     public FoodstuffEntity getFoodstuffEntity() { return foodstuffEntity; }
     public int getSize() { return  size; }

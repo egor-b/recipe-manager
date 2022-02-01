@@ -24,8 +24,8 @@ public class FoodstuffEntity implements Serializable {
     private String name;
 
     @JsonProperty("pic")
-    @Column(name = "FOOD_PIC_BYTE")
-    private byte[] image;
+    @Column(name = "IMAGE_REFERENCE")
+    private String image;
 
     public FoodstuffEntity() {}
 
@@ -33,13 +33,13 @@ public class FoodstuffEntity implements Serializable {
     public String getName() {
         return name;
     }
-    public byte[] getImage() {
+    public String getImage() {
         return image;
     }
 
     public void setName(String name) { this.name = name; }
     public void setId(long id) { this.id = id; }
-    public void setImage(byte[] image) {
+    public void setImage(String image) {
         this.image = image;
     }
 }

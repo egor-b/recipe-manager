@@ -3,10 +3,11 @@ package com.foodcrunch.foodster.recipemanager.repository.service;
 import com.foodcrunch.foodster.recipemanager.model.entity.FoodEntity;
 import com.foodcrunch.foodster.recipemanager.model.entity.FoodstuffEntity;
 import com.foodcrunch.foodster.recipemanager.model.entity.RecipeEntity;
-import com.foodcrunch.foodster.recipemanager.repository.FoodRepository;
+import com.foodcrunch.foodster.recipemanager.repository.FoodstuffRepository;
 import com.foodcrunch.foodster.recipemanager.repository.RecipeRepository;
 import com.foodcrunch.foodster.recipemanager.repository.RecipeRepositoryInterface;
 import com.foodcrunch.foodster.recipemanager.service.ImageManagerService;
+import io.micrometer.core.instrument.util.StringUtils;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -34,7 +35,7 @@ import java.util.Map;
 public class RecipeRepositoryInterfaceService implements RecipeRepositoryInterface {
 
     private final RecipeRepository recipeRepository;
-    private final FoodRepository foodRepository;
+    private final FoodstuffRepository foodstuffRepository;
     private final ImageManagerService imageManagerService;
 
     @PersistenceContext
@@ -46,19 +47,25 @@ public class RecipeRepositoryInterfaceService implements RecipeRepositoryInterfa
             public Predicate toPredicate(Root<RecipeEntity> root, CriteriaQuery<?> criteriaQuery, CriteriaBuilder criteriaBuilder) {
 
                 List<Predicate> predicates = new ArrayList<>();
-                if (param.get("name")!=null) {
+                if (!StringUtils.isEmpty(param.get("name"))) {
                     predicates.add(criteriaBuilder.and(criteriaBuilder.like(root.get("name"), "%" + param.get("name") + "%")));
-                } else if (param.get("about")!=null) {
+                }
+                if (!StringUtils.isEmpty(param.get("about"))) {
                     predicates.add(criteriaBuilder.and(criteriaBuilder.like(root.get("about"), "%" + param.get("about") + "%")));
-                } else if (param.get("type")!=null) {
+                }
+                if (!StringUtils.isEmpty(param.get("type"))) {
                     predicates.add(criteriaBuilder.and(criteriaBuilder.equal(root.get("type"), param.get("type"))));
-                } else if (param.get("user_id")!=null) {
-                    predicates.add(criteriaBuilder.and(criteriaBuilder.equal(root.get("user_id"), param.get("userId"))));
-                } else if (param.get("level")!=null) {
+                }
+                if (!StringUtils.isEmpty(param.get("userId"))) {
+                    predicates.add(criteriaBuilder.and(criteriaBuilder.equal(root.get("userId"), param.get("userId"))));
+                }
+                if (!StringUtils.isEmpty(param.get("level"))) {
                     predicates.add(criteriaBuilder.and(criteriaBuilder.equal(root.get("level"), param.get("level"))));
-                } else if (param.get("lang")!=null) {
+                }
+                if (!StringUtils.isEmpty(param.get("lang"))) {
                     predicates.add(criteriaBuilder.and(criteriaBuilder.equal(root.get("lang"), param.get("lang"))));
-                } else if (param.get("ingredient")!=null) {
+                }
+                if (!StringUtils.isEmpty(param.get("ingredient"))) {
                     String[] separatedString = param.get("ingredient").split(",");
 
                     Subquery<Long> subFoodstuff = criteriaQuery.subquery(Long.class);
@@ -73,12 +80,14 @@ public class RecipeRepositoryInterfaceService implements RecipeRepositoryInterfa
                     subCookFood.where(criteriaBuilder.and(subCookFoodProject.get("foodstuffEntity").in(subFoodstuff)));
 
                     predicates.add(criteriaBuilder.and(root.get("id").in(subCookFood)));
-                } else if (/*param.get("minServe")!=null && */param.get("maxServe")!=null) {
+                }
+                if (/*param.get("minServe")!=null && */param.get("maxServe")!=null) {
 //                        predicates.add(criteriaBuilder.between(
 //                                root.get("serve"), Integer.valueOf(param.get("minServe")), Integer.valueOf(param.get("maxServe"))
 //                        ));
                     predicates.add(criteriaBuilder.lessThanOrEqualTo(root.get("serve"), Integer.valueOf(param.get("maxServe"))));
-                } else if(param.get("minTime")!=null && param.get("maxTime")!=null) {
+                }
+                if(!StringUtils.isEmpty(param.get("minTime")) && !StringUtils.isEmpty(param.get("maxTime"))) {
                     predicates.add(criteriaBuilder.between(root.get("time"), Integer.valueOf(param.get("minTime")), Integer.valueOf(param.get("maxTime"))));
                 }
                 return criteriaBuilder.and(predicates.toArray(new Predicate[predicates.size()]));
@@ -93,12 +102,13 @@ public class RecipeRepositoryInterfaceService implements RecipeRepositoryInterfa
         Query getRecipeSeq = em.createNativeQuery("SELECT nextval('recipe.recipe_seq')");
 
         Query insertRecipe = em.createNativeQuery("INSERT INTO RECIPE.RECIPE (about, date, language, level, name, serve, time, type, user_id, visible, id) VALUES (:about, :date, :language, :level, :name, :serve, :time, :type, :user_id, :visible, :id)");
-        Query insertFoodstuff = em.createNativeQuery("INSERT INTO RECIPE.FOODSTUFF (food_pic_byte, name, id) VALUES (:pic, :name, nextval('recipe.foodstuff_seq'))");
+        Query insertFoodstuff = em.createNativeQuery("INSERT INTO RECIPE.FOODSTUFF (IMAGE_REFERENCE, name, id) VALUES (:pic, :name, nextval('recipe.foodstuff_seq'))");
         Query insertFoodstuffNoPic = em.createNativeQuery("INSERT INTO RECIPE.FOODSTUFF (name, id) VALUES (:name, nextval('recipe.foodstuff_seq'))");
 
         Query insertFood = em.createNativeQuery("INSERT INTO RECIPE.FOOD (food_id, measure, recipe_id, size, id) VALUES (:food_id, :measure, :recipe_id, :size, nextval('recipe.cookfood_seq'))");
-        Query insertStep = em.createNativeQuery("INSERT INTO RECIPE.STEP (cook_pic_byte, step, step_number, recipe_id, id) VALUES (:image, :step, :step_number, :recipe_id, nextval('recipe.cookstep_seq'))");
-        Query insertImage = em.createNativeQuery("INSERT INTO RECIPE.IMAGE (pic_byte, recipe_id, id) VALUES (:image, :recipe_id, nextval('recipe.image_seq'))");
+        Query insertStep = em.createNativeQuery("INSERT INTO RECIPE.STEP (IMAGE_REFERENCE, step, step_number, recipe_id, id) VALUES (:image, :step, :step_number, :recipe_id, nextval('recipe.cookstep_seq'))");
+        Query insertStepNoPic = em.createNativeQuery("INSERT INTO RECIPE.STEP (step, step_number, recipe_id, id) VALUES (:step, :step_number, :recipe_id, nextval('recipe.cookstep_seq'))");
+        Query insertImage = em.createNativeQuery("INSERT INTO RECIPE.IMAGE (IMAGE_REFERENCE, recipe_id, id) VALUES (:image, :recipe_id, nextval('recipe.image_seq'))");
 //Save main information about recipe
         BigInteger toLong = (BigInteger) getRecipeSeq.getSingleResult();
 
@@ -118,14 +128,20 @@ public class RecipeRepositoryInterfaceService implements RecipeRepositoryInterfa
 
         recipeEntity.getFoodEntity().forEach( (f) -> {
             if (f.getFoodstuffEntity().getId()==0) {
-                FoodstuffEntity resultFs = foodRepository.findByNameEqualsIgnoreCase(f.getFoodstuffEntity().getName());
+                FoodstuffEntity resultFs = foodstuffRepository.findByNameEqualsIgnoreCase(f.getFoodstuffEntity().getName());
                 if (resultFs == null) {
-                    byte[] pic = imageManagerService.compressBytes(f.getFoodstuffEntity().getImage());
-                    insertFoodstuff
-                            .setParameter("name", f.getFoodstuffEntity().getName())
-                            .setParameter("pic", pic)
-                            .executeUpdate();
-                    resultFs = foodRepository.findByNameEqualsIgnoreCase(f.getFoodstuffEntity().getName());
+                    if (f.getFoodstuffEntity().getImage() != null) {
+                        String pic = f.getFoodstuffEntity().getImage();
+                        insertFoodstuff
+                                .setParameter("name", f.getFoodstuffEntity().getName())
+                                .setParameter("pic", pic)
+                                .executeUpdate();
+                    } else {
+                        insertFoodstuffNoPic
+                                .setParameter("name", f.getFoodstuffEntity().getName())
+                                .executeUpdate();
+                    }
+                    resultFs = foodstuffRepository.findByNameEqualsIgnoreCase(f.getFoodstuffEntity().getName());
                 }
                 f.setFoodstuffEntity(resultFs);
             }
@@ -138,22 +154,33 @@ public class RecipeRepositoryInterfaceService implements RecipeRepositoryInterfa
                     .executeUpdate();
         });
 
-//        recipeEntity.getStepEntity().forEach(n -> {
-//            byte[] pic = imageManagerService.compressBytes(n.getImage());
-//            insertStep
-//                    .setParameter("image", pic)
-//                    .setParameter("step", n.getStep())
-//                    .setParameter("step_number", n.getStepNumber())
-//                    .setParameter("recipe_id", recipeEntity.getId())
-//                    .executeUpdate();
-//        });
-//
-//        recipeEntity.getImageEntity().forEach(n -> {
-//            byte[] pic = imageManagerService.compressBytes(n.getImage());
-//            insertImage
-//                    .setParameter("image", pic)
-//                    .setParameter("recipe_id", recipeEntity.getId())
-//                    .executeUpdate();
-//        });
+        recipeEntity.getStepEntity().forEach(n -> {
+            if (n.getImage() != null) {
+                String pic = n.getImage();
+                insertStep
+                        .setParameter("image", pic)
+                        .setParameter("step", n.getStep())
+                        .setParameter("step_number", n.getStepNumber())
+                        .setParameter("recipe_id", recipeEntity.getId())
+                        .executeUpdate();
+            } else {
+                insertStepNoPic
+                        .setParameter("step", n.getStep())
+                        .setParameter("step_number", n.getStepNumber())
+                        .setParameter("recipe_id", recipeEntity.getId())
+                        .executeUpdate();
+            }
+        });
+
+        if (recipeEntity.getImageEntity().size() != 0) {
+            recipeEntity.getImageEntity().forEach(n -> {
+                String pic = n.getImage();
+                insertImage
+                        .setParameter("image", pic)
+                        .setParameter("recipe_id", recipeEntity.getId())
+                        .executeUpdate();
+            });
+        }
+
     }
 }

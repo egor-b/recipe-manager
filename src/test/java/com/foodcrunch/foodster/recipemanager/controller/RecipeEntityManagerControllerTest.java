@@ -44,7 +44,7 @@ public class RecipeEntityManagerControllerTest {
                 .exchange()
                 .expectStatus()
                 .isOk();
-        verify(recipeManagerService, times(1)).retrieveRecipeById(TestValue.getValidId);
+        verify(recipeManagerService, times(1)).retrieveRecipeById(TestValue.getValidLongId);
     }
 
     @Test
@@ -58,7 +58,7 @@ public class RecipeEntityManagerControllerTest {
                 .exchange()
                 .expectStatus()
                 .isBadRequest();
-        verify(recipeManagerService, times(0)).retrieveRecipeById(TestValue.getValidId);
+        verify(recipeManagerService, times(0)).retrieveRecipeById(TestValue.getValidLongId);
     }
 
     @Test
@@ -72,7 +72,7 @@ public class RecipeEntityManagerControllerTest {
                 .exchange()
                 .expectStatus()
                 .isNotFound();
-        verify(recipeManagerService, times(0)).retrieveRecipeById(TestValue.getValidId);
+        verify(recipeManagerService, times(0)).retrieveRecipeById(TestValue.getValidLongId);
     }
 
     @Test
@@ -152,7 +152,7 @@ public class RecipeEntityManagerControllerTest {
     @Test
     @WithMockUser
     public void whenValidUserId_thenReturnListOfRecipe() {
-        when(recipeManagerService.getRecipesByUserId(TestValue.getValidId, 0,20,"date", Sort.Direction.ASC))
+        when(recipeManagerService.getRecipesByUserId(TestValue.getValidId, 0,20,"date", Sort.Direction.ASC, TestValue.getRequestBody()))
                 .thenReturn(Flux.fromIterable(TestValue.getListValidRecipes(3)));
         webTestClient.mutateWith(csrf())
                 .get()
@@ -161,13 +161,13 @@ public class RecipeEntityManagerControllerTest {
                 .exchange()
                 .expectStatus()
                 .isOk();
-        verify(recipeManagerService, times(1)).getRecipesByUserId(TestValue.getValidId, 0,20,"date", Sort.Direction.ASC);
+        verify(recipeManagerService, times(1)).getRecipesByUserId(TestValue.getValidId, 0,20,"date", Sort.Direction.ASC, TestValue.getRequestBody());
     }
 
     @Test
     @WithMockUser
     public void whenInvalidValidUserAndInvalidCriteria_thenReturnBadRequest() {
-        when(recipeManagerService.getRecipesByUserId(TestValue.getValidId, 0,9999,"date", Sort.Direction.DESC))
+        when(recipeManagerService.getRecipesByUserId(TestValue.getValidId, 0,9999,"date", Sort.Direction.DESC, TestValue.getRequestBody()))
                 .thenReturn(Flux.error(new BadRequestException("board")));
         webTestClient.mutateWith(csrf())
                 .get()
@@ -176,7 +176,7 @@ public class RecipeEntityManagerControllerTest {
                 .exchange()
                 .expectStatus()
                 .isBadRequest();
-        verify(recipeManagerService, times(1)).getRecipesByUserId(TestValue.getValidId, 0,9999,"date", Sort.Direction.DESC);
+        verify(recipeManagerService, times(1)).getRecipesByUserId(TestValue.getValidId, 0,9999,"date", Sort.Direction.DESC, TestValue.getRequestBody());
     }
 
 }

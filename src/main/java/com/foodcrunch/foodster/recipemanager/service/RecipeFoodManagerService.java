@@ -3,7 +3,7 @@ package com.foodcrunch.foodster.recipemanager.service;
 import com.foodcrunch.foodster.recipemanager.constant.LogLevel;
 import com.foodcrunch.foodster.recipemanager.exception.BadRequestException;
 import com.foodcrunch.foodster.recipemanager.model.entity.FoodstuffEntity;
-import com.foodcrunch.foodster.recipemanager.repository.FoodRepository;
+import com.foodcrunch.foodster.recipemanager.repository.FoodstuffRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.PageRequest;
@@ -18,7 +18,7 @@ import static com.foodcrunch.foodster.recipemanager.constant.ExceptionsConstants
 @RequiredArgsConstructor
 public class RecipeFoodManagerService {
 
-    private final FoodRepository foodRepository;
+    private final FoodstuffRepository foodstuffRepository;
     private final LogService logService;
 
     public Flux<FoodstuffEntity> getFoodByName(String name, Integer pageNumber, Integer pageSize, Sort.Direction sortOrder, String sortKey) {
@@ -27,7 +27,7 @@ public class RecipeFoodManagerService {
             return Flux.error(new BadRequestException(message));
         }
         PageRequest page = PageRequest.of(pageNumber, pageSize, Sort.by(sortOrder,sortKey));
-        return Flux.fromIterable(foodRepository.findByNameContainingIgnoreCase(page, name));
+        return Flux.fromIterable(foodstuffRepository.findByNameContainingIgnoreCase(page, name));
     }
 
 }

@@ -42,7 +42,7 @@ public class TestValue {
                 FoodstuffEntity foodstuffEntity = new FoodstuffEntity();
                 FoodEntity cookFoodEntitie = new FoodEntity();
                 foodstuffEntity.setName("bla" + ri);
-                foodstuffEntity.setImage(new byte[] { });
+                foodstuffEntity.setImage("");
                 cookFoodEntitie.setMeasure("mgr");
                 cookFoodEntitie.setSize(2+ri);
                 cookFoodEntitie.setFoodstuffEntity(foodstuffEntity);
@@ -55,7 +55,7 @@ public class TestValue {
                 StepEntity stepEntity = new StepEntity();
                 stepEntity.setStepNumber(rs);
                 stepEntity.setStep("Step by step " + rs);
-                stepEntity.setImage(new byte[] { });
+                stepEntity.setImage("");
                 cookStepEntities.add(stepEntity);
             }
 
@@ -63,7 +63,7 @@ public class TestValue {
 
             for (int rp = 0; rp < 3; rp++) {
                 ImageEntity imageEntity = new ImageEntity();
-                imageEntity.setImage(new byte[] { });
+                imageEntity.setImage("");
                 imageEntities.add(imageEntity);
             }
 

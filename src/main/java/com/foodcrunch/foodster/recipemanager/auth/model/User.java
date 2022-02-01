@@ -1,12 +1,11 @@
 package com.foodcrunch.foodster.recipemanager.auth.model;
 
-import lombok.Builder;
+import com.foodcrunch.foodster.recipemanager.auth.model.enumaration.Role;
 import lombok.Data;
 
 import java.util.Set;
 
 @Data
-@Builder
 public class User {
 
     private String uid;
@@ -16,8 +15,9 @@ public class User {
     private String email;
     private String country;
     private String phone;
-    private String pic = "pic_template.jpeg";
-    private boolean disable = false;
-    private Set<RoleModel> role;
+    private String issuer;
+    private String pic;
+    private Role role;
+    private String accountType;
 
 }

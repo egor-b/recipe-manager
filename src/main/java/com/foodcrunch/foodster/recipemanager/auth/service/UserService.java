@@ -1,21 +1,17 @@
 package com.foodcrunch.foodster.recipemanager.auth.service;
 
 import com.foodcrunch.foodster.recipemanager.auth.exception.UserNotFoundException;
-import com.foodcrunch.foodster.recipemanager.auth.model.RoleEntity;
 import com.foodcrunch.foodster.recipemanager.auth.model.User;
 import com.foodcrunch.foodster.recipemanager.auth.model.UserEntity;
 import com.foodcrunch.foodster.recipemanager.auth.repository.UserRepository;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseAuthException;
-import com.google.firebase.auth.FirebaseToken;
-import com.google.firebase.auth.UserRecord;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+import org.springframework.util.ObjectUtils;
 import reactor.core.publisher.Flux;
-
-import java.util.HashSet;
-import java.util.Set;
 
 @Slf4j
 @Service
@@ -23,6 +19,31 @@ import java.util.Set;
 public class UserService {
 
     private final UserRepository userRepository;
+
+    public void createUser(User user) {
+        UserEntity checkUser = userRepository.findByUid(user.getUid());
+        if (ObjectUtils.isEmpty(checkUser)) {
+            userRepository.save(convertUserModelToEntity(user));
+        }
+    }
+
+    public void updateUserEmail(User user) {
+        userRepository.updateUserEmail(user.getEmail(), user.getUid());
+        emailVerificationRequest(user.getEmail());
+    }
+
+    @Transactional
+    public void updateUserName(User user) {
+        userRepository.updateUserName(user.getName(), user.getLName(), user.getUid());
+    }
+
+    public final void emailVerificationRequest(String email) {
+        try {
+            FirebaseAuth.getInstance().generateEmailVerificationLink(email);
+        } catch (FirebaseAuthException err) {
+            err.getStackTrace();
+        }
+    }
 
     public Flux<UserEntity> loadUserByUid(String uid) {
         UserEntity userEntity = userRepository.findByUid(uid);
@@ -44,87 +65,13 @@ public class UserService {
         return Flux.just(userEntity);
     }
 
-//    public void createNewUser(User user) {
-//        try {
-//            UserRecord.CreateRequest userRequest = new UserRecord.CreateRequest()
-//                    .setEmail(user.getEmail())
-//                    .setPassword(user.getPassword())
-//                    .setPhoneNumber(user.getPhone())
-//                    .setDisplayName(user.getName() + " " + user.getLName())
-//                    .setPhotoUrl(user.getPic())
-//                    .setDisabled(user.isDisable());
-//
-//            UserRecord userRecord = FirebaseAuth.getInstance().createUser(userRequest);
-//
-//            user.setUid(userRecord.getUid());
-//
-//            userRepository.save(convertUserModelToEntity(user));
-//            emailVerificationRequest(user.getEmail());
-//        } catch (FirebaseAuthException err) {
-//            err.getStackTrace();
-//        }
-//    }
 
-    public void updateUser(User user) {
-        try {
-            UserRecord.UpdateRequest request = new UserRecord.UpdateRequest(user.getUid())
-                    .setEmail(user.getEmail())
-                    .setDisplayName(user.getName() + " " + user.getLName())
-                    .setPhotoUrl(user.getPic())
-                    .setDisabled(user.isDisable());
-            UserRecord userRecord = FirebaseAuth.getInstance().updateUser(request);
-            userRepository.save(convertUserModelToEntity(user));
-        } catch (FirebaseAuthException err) {
-            err.getStackTrace();
-        }
-    }
-
-    public final void changePasswordRequest(User user) {
-        try {
-            UserRecord.UpdateRequest request = new UserRecord.UpdateRequest(user.getUid());
-            FirebaseAuth.getInstance().updateUser(request);
-        } catch (FirebaseAuthException err) {
-            err.getStackTrace();
-        }
-    }
-
-    public final void changeEmailRequest(User user) {
-        try {
-            UserRecord.UpdateRequest request = new UserRecord.UpdateRequest(user.getUid())
-                    .setEmail(user.getEmail())
-                    .setEmailVerified(false);
-            UserRecord userRecord = FirebaseAuth.getInstance().updateUser(request);
-            userRepository.updateUserEmail(user.getEmail(), user.getUid());
-            emailVerificationRequest(user.getEmail());
-            log.info("New email was setted: " + userRecord.getUid());
-        } catch (FirebaseAuthException err) {
-            err.getStackTrace();
-        }
-    }
-
-    public final void emailVerificationRequest(String email) {
-        try {
-            FirebaseAuth.getInstance().generateEmailVerificationLink(email);
-        } catch (FirebaseAuthException err) {
-            err.getStackTrace();
-        }
-    }
-
-    public final void userTokenVerification(String idToken) {
-        try {
-            FirebaseToken decodedToken = FirebaseAuth.getInstance().verifyIdToken(idToken);
-            System.out.println(decodedToken.getClaims());
-        } catch (FirebaseAuthException err) {
-            err.getStackTrace();
-        }
-    }
 
     protected UserEntity convertUserModelToEntity(User user) {
         UserEntity userEntity = new UserEntity();
-        Set<RoleEntity> roleEntity = new HashSet<>();
+//        Set<RoleEntity> roleEntity = new HashSet<>();
 
         userEntity.setCountry(user.getCountry());
-        userEntity.setDisable(user.isDisable());
         userEntity.setEmail(user.getEmail());
         userEntity.setLName(user.getLName());
         userEntity.setName(user.getName());
@@ -132,7 +79,8 @@ public class UserService {
         userEntity.setPic(user.getPic());
         userEntity.setUid(user.getUid());
         userEntity.setUsername(user.getUsername());
-        userEntity.setRole(roleEntity);
+        userEntity.setAccountType(user.getAccountType());
+//        userEntity.setRole(roleEntity);
 
         return userEntity;
     }

@@ -23,7 +23,7 @@ public class ImageEntity implements Serializable {
     private long id;
 
     @JsonProperty("pic")
-    @Column(name = "PIC_BYTE", nullable = false)
-    private byte[] image;
+    @Column(name = "IMAGE_REFERENCE", nullable = false)
+    private String image;
 
 }
