@@ -34,7 +34,7 @@ public class TestValue {
             recipeEntity.setLevel(3.5);
             recipeEntity.setType("type");
             recipeEntity.setAbout("About");
-            recipeEntity.setUserId(1);
+            recipeEntity.setUserId("1");
             recipeEntity.setLang("EN");
             recipeEntity.setVisible(true);
 

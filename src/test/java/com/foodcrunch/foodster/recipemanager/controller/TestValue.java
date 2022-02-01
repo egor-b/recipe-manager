@@ -34,7 +34,7 @@ public class TestValue {
             recipeEntity.setLevel(3.5);
             recipeEntity.setType("type_" + i);
             recipeEntity.setAbout("About_" + i);
-            recipeEntity.setUserId(i);
+            recipeEntity.setUserId("sds");
             recipeEntity.setLang("EN");
             recipeEntity.setVisible(true);
             recipeEntities.add(recipeEntity);
@@ -80,7 +80,7 @@ public class TestValue {
         recipeEntity.setLevel(3.5);
         recipeEntity.setType("type");
         recipeEntity.setAbout("About");
-        recipeEntity.setUserId(1);
+        recipeEntity.setUserId("ropger");
         recipeEntity.setLang("EN");
         recipeEntity.setVisible(true);
 
