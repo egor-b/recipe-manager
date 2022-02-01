@@ -10,9 +10,9 @@ spring:
       accept-case-insensitive-properties: true
 
   datasource:
-    url: jdbc:postgresql://ec2-34-203-155-237.compute-1.amazonaws.com:5432/d7pntfk4v8p94d
-    username: crqbgdhunawynu
-    password: 3a083ec451cb103fb944e947be4cfbae43be02d7bfeaf9991a23183085b0601b
+    url: jdbc:postgresql://ec2-3-225-41-234.compute-1.amazonaws.com:5432/d8jhvfv2mluheo
+    username: ldysxlweoguazb
+    password: bfd875e47e33a8c99562e501b39ec0ec16505f806f87af9899b4f257b40879ee
 
   jpa:
     show-sql: false
