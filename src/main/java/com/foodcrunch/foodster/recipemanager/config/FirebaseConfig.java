@@ -7,7 +7,11 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Primary;
+import org.springframework.context.support.ClassPathXmlApplicationContext;
+import org.springframework.core.io.Resource;
+import org.springframework.util.ResourceUtils;
 
+import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 
@@ -19,11 +23,11 @@ public class FirebaseConfig {
     @Bean
     public void firebaseInit() {
         try {
-            FileInputStream serviceAccount =
-                    new FileInputStream("src/main/resources/slowcooker-a725e-firebase-adminsdk-ofrx3-79cff3cd02.json");
+            ClassPathXmlApplicationContext appContext = new ClassPathXmlApplicationContext();
+            Resource file = appContext.getResource("classpath:slowcooker-a725e-firebase-adminsdk-ofrx3-79cff3cd02.json");
 
             FirebaseOptions options = new FirebaseOptions.Builder()
-                    .setCredentials(GoogleCredentials.fromStream(serviceAccount))
+                    .setCredentials(GoogleCredentials.fromStream(file.getInputStream()))
                     .build();
             if (FirebaseApp.getApps().isEmpty()) {
                 FirebaseApp.initializeApp(options);

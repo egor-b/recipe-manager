@@ -54,6 +54,9 @@ public class UserEntity {
     @Column(name = "IS_DISABLE", nullable = false)
     private boolean isDisable = false;
 
+    @Column(name = "VIOLATION", nullable = false)
+    private Integer violation = 0;
+
 //    @ManyToMany(fetch = FetchType.EAGER)
 //    @JoinTable(name = "USER_ROLE", schema = "USERS",
 //            joinColumns = @JoinColumn(name = "USER_ID", referencedColumnName = "ID"),

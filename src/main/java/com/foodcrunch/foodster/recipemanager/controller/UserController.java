@@ -23,9 +23,8 @@ public class UserController {
 
     @PostMapping(path = "/create")
     @ResponseStatus(HttpStatus.OK)
-    @ApiOperation(value = "Retrieve recipes", notes = "Recipes search by filter")
-    @ApiResponses(value = {@ApiResponse(code = 200, message = "", response = RecipeEntity.class, responseContainer = "Recipe"),
-            @ApiResponse(code = 404, message = "Recipes not found"),
+    @ApiOperation(value = "Create User", notes = "Create new user")
+    @ApiResponses(value = {@ApiResponse(code = 200, message = "User succefulluly created", responseContainer = "User"),
             @ApiResponse(code = 400, message = "Missing or invalid request body"),
             @ApiResponse(code = 500, message = "Internal Server error")})
     public void createUser(@RequestBody User user) {
@@ -35,49 +34,31 @@ public class UserController {
     @PutMapping(path = "/updateEmail")
     @ResponseStatus(HttpStatus.OK)
     @ApiOperation(value = "Retrieve recipes", notes = "Recipes search by filter")
-    @ApiResponses(value = {@ApiResponse(code = 200, message = "", response = RecipeEntity.class, responseContainer = "Recipe"),
-            @ApiResponse(code = 404, message = "Recipes not found"),
-            @ApiResponse(code = 400, message = "Missing or invalid request body"),
-            @ApiResponse(code = 500, message = "Internal Server error")})
+    @ApiResponses(value = {@ApiResponse(code = 200, message = "updated", responseContainer = "User")})
     public void updateUserEmail(@RequestBody User user) {
         userService.updateUserEmail(user);
     }
 
-    @PutMapping(path = "/updateName")
-    @ResponseStatus(HttpStatus.OK)
-    @ApiOperation(value = "Retrieve recipes", notes = "Recipes search by filter")
-    @ApiResponses(value = {@ApiResponse(code = 200, message = "", response = RecipeEntity.class, responseContainer = "Recipe"),
-            @ApiResponse(code = 404, message = "Recipes not found"),
-            @ApiResponse(code = 400, message = "Missing or invalid request body"),
-            @ApiResponse(code = 500, message = "Internal Server error")})
-    public void updateUserName(@RequestBody User user) {
-        userService.updateUserName(user);
-    }
-
     @GetMapping(path = "/find/{uid}")
     @ResponseStatus(HttpStatus.OK)
-    @ApiOperation(value = "Retrieve recipes", notes = "Recipes search by filter")
-    @ApiResponses(value = {@ApiResponse(code = 200, message = "", response = RecipeEntity.class, responseContainer = "Recipe"),
-            @ApiResponse(code = 404, message = "Recipes not found"),
+    @ApiOperation(value = "Find User", notes = "Find user bu UID")
+    @ApiResponses(value = {@ApiResponse(code = 200, message = "", response = UserEntity.class, responseContainer = "User"),
+            @ApiResponse(code = 404, message = "User not found"),
             @ApiResponse(code = 400, message = "Missing or invalid request body"),
             @ApiResponse(code = 500, message = "Internal Server error")})
 
     public Flux<UserEntity> findUserByUid(@PathVariable(value = "uid") String uid) {
         return userService.loadUserByUid(uid).doOnNext(success ->
-                        log.info("User was found"))
+                        log.info("User {} was found", success.getName()))
                 .doOnError(error ->
                         log.debug(error.getStackTrace().toString()));
     }
 
-//    @PostMapping(path = "/find")
-//    @ResponseStatus(HttpStatus.OK)
-//    @ApiOperation(value = "Retrieve recipes", notes = "Recipes search by filter")
-//    @ApiResponses(value = {@ApiResponse(code = 200, message = "", response = RecipeEntity.class, responseContainer = "Recipe"),
-//            @ApiResponse(code = 404, message = "Recipes not found"),
-//            @ApiResponse(code = 400, message = "Missing or invalid request body"),
-//            @ApiResponse(code = 500, message = "Internal Server error")})
-//
-//    public void findUser(@RequestBody User user) {
-//
-//    }
+    @PutMapping(path = "/update")
+    @ResponseStatus(HttpStatus.OK)
+    @ApiOperation(value = "Update", notes = "Update user information")
+    @ApiResponses(value = {@ApiResponse(code = 200, message = "User is updated", responseContainer = "Recipe")})
+    public void findUser(@RequestBody User user) {
+        userService.updateUserPic(user);
+    }
 }

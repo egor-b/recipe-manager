@@ -28,8 +28,9 @@ public class FoodEntity implements Serializable {
     private RecipeEntity recipeEntity;
 
     @JsonProperty("foodstuff")
-    @ManyToOne(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
+    @ManyToOne(fetch = FetchType.EAGER, cascade = CascadeType.PERSIST)
     @JoinColumn(name = "FOOD_ID", referencedColumnName = "ID")
+//    @Column(name = "FOOD_ID ", nullable = false)
     private FoodstuffEntity foodstuffEntity;
 
     @Column(name = "SIZE", nullable = false)
@@ -38,9 +39,6 @@ public class FoodEntity implements Serializable {
     @Column(name = "MEASURE", nullable = false)
     private String measure;
 
-    public FoodEntity() {}
-
-//    @JsonIgnore
     public long getId() { return id; }
     public FoodstuffEntity getFoodstuffEntity() { return foodstuffEntity; }
     public int getSize() { return  size; }

@@ -48,9 +48,10 @@ public class PurchaseService {
                 if (pr.getRecipeId() == p.getRecipeId()) {
                     PurchaseFoodResponse pfr = new PurchaseFoodResponse();
                     FoodEntity fe = foodRepository.findById(p.getFood()).get();
+                    pfr.setId(p.getId());
                     pfr.setName(fe.getFoodstuffEntity().getName());
                     pfr.setMeasure(fe.getMeasure());
-                    pfr.setId(fe.getId());
+                    pfr.setIsAvailable(p.isAvailable());
                     if (p.getSize() != 0 ){
                         pfr.setSize(String.valueOf(p.getSize()));
                     } else {
@@ -69,8 +70,8 @@ public class PurchaseService {
         return purchaseRepository.findByFoodAndUserIdAndRecipeId(foodId, userId, recipeId);
     }
 
-    public void updateCar(boolean isAdd, long id) {
-        purchaseRepository.updateCart(isAdd, id);
+    public void updateCar(boolean isAdd, long id, String user) {
+        purchaseRepository.updateCart(isAdd, id, user);
     }
 
     public void deleteFromCart(long foodId, long recipeId, String userId) {

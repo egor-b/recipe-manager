@@ -4,6 +4,7 @@ import com.foodcrunch.foodster.recipemanager.auth.exception.UserNotFoundExceptio
 import com.foodcrunch.foodster.recipemanager.auth.model.User;
 import com.foodcrunch.foodster.recipemanager.auth.model.UserEntity;
 import com.foodcrunch.foodster.recipemanager.auth.repository.UserRepository;
+import com.foodcrunch.foodster.recipemanager.auth.repository.UserUpdateRepository;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseAuthException;
 import lombok.RequiredArgsConstructor;
@@ -19,6 +20,7 @@ import reactor.core.publisher.Flux;
 public class UserService {
 
     private final UserRepository userRepository;
+    private final UserUpdateRepository userUpdateRepository;
 
     public void createUser(User user) {
         UserEntity checkUser = userRepository.findByUid(user.getUid());
@@ -30,11 +32,6 @@ public class UserService {
     public void updateUserEmail(User user) {
         userRepository.updateUserEmail(user.getEmail(), user.getUid());
         emailVerificationRequest(user.getEmail());
-    }
-
-    @Transactional
-    public void updateUserName(User user) {
-        userRepository.updateUserName(user.getName(), user.getLName(), user.getUid());
     }
 
     public final void emailVerificationRequest(String email) {
@@ -55,21 +52,24 @@ public class UserService {
         return Flux.just(userEntity);
     }
 
-    public Flux<UserEntity> findUserByUserId(Long id) {
-        UserEntity userEntity = userRepository.findById(id).orElse(null);
-        if (userEntity == null) {
-            String message = String.format("User was not found by id {}", id);
-            log.info(message);
-            return Flux.error(new UserNotFoundException(message));
-        }
-        return Flux.just(userEntity);
-    }
+//    public Flux<UserEntity> findUserByUserId(Long id) {
+//        UserEntity userEntity = userRepository.findById(id).orElse(null);
+//        if (userEntity == null) {
+//            String message = String.format("User was not found by id {}", id);
+//            log.info(message);
+//            return Flux.error(new UserNotFoundException(message));
+//        }
+//        return Flux.just(userEntity);
+//    }
 
+    @Transactional
+    public void updateUserPic(User user) {
+        userUpdateRepository.updateUser(user);
+    }
 
 
     protected UserEntity convertUserModelToEntity(User user) {
         UserEntity userEntity = new UserEntity();
-//        Set<RoleEntity> roleEntity = new HashSet<>();
 
         userEntity.setCountry(user.getCountry());
         userEntity.setEmail(user.getEmail());

@@ -36,7 +36,7 @@ public class TestValue {
             recipeEntity.setAbout("About_" + i);
             recipeEntity.setUserId("sds");
             recipeEntity.setLang("EN");
-            recipeEntity.setVisible(true);
+            recipeEntity.setVisible("true");
             recipeEntities.add(recipeEntity);
         }
 
@@ -82,7 +82,7 @@ public class TestValue {
         recipeEntity.setAbout("About");
         recipeEntity.setUserId("ropger");
         recipeEntity.setLang("EN");
-        recipeEntity.setVisible(true);
+        recipeEntity.setVisible("true");
 
         for(int i = 0; i < numOfIng; i++) {
             FoodstuffEntity foodstuffEntity = new FoodstuffEntity();

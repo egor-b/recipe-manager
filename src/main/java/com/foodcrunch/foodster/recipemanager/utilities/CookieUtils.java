@@ -1,4 +1,4 @@
-package com.foodcrunch.foodster.recipemanager;
+package com.foodcrunch.foodster.recipemanager.utilities;
 
 import com.foodcrunch.foodster.recipemanager.model.security.SecurityProperties;
 import org.springframework.beans.factory.annotation.Autowired;

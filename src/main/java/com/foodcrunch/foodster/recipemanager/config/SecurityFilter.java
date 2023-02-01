@@ -1,6 +1,6 @@
 package com.foodcrunch.foodster.recipemanager.config;
 
-import com.foodcrunch.foodster.recipemanager.CookieUtils;
+import com.foodcrunch.foodster.recipemanager.utilities.CookieUtils;
 import com.foodcrunch.foodster.recipemanager.auth.model.User;
 import com.foodcrunch.foodster.recipemanager.config.service.SecurityService;
 import com.foodcrunch.foodster.recipemanager.model.security.Credentials;

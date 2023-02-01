@@ -36,7 +36,7 @@ public class TestValue {
             recipeEntity.setAbout("About");
             recipeEntity.setUserId("1");
             recipeEntity.setLang("EN");
-            recipeEntity.setVisible(true);
+            recipeEntity.setVisible("true");
 
             for(int ri = 0; ri < numOfIng; ri++) {
                 FoodstuffEntity foodstuffEntity = new FoodstuffEntity();

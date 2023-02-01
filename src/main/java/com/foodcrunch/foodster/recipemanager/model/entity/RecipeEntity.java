@@ -2,6 +2,7 @@ package com.foodcrunch.foodster.recipemanager.model.entity;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Data;
+import lombok.RequiredArgsConstructor;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
@@ -20,6 +21,7 @@ import java.util.Set;
 
 @Entity
 @Data
+@RequiredArgsConstructor
 @Table(name = "RECIPE")
 public class RecipeEntity implements Serializable {
 
@@ -48,13 +50,13 @@ public class RecipeEntity implements Serializable {
 
     @JsonProperty("timestamp")
     @Column(name = "DATE", nullable = false)
-    private Date date = new Date();
+    private String date;// = new Date();
 
     @Column(name = "USER_ID", nullable = true)
     private String userId;
 
     @Column(name = "VISIBLE", nullable = false)
-    private boolean visible;
+    private String visible;
 
     @Column(name = "LANGUAGE", nullable = false)
     private String lang;

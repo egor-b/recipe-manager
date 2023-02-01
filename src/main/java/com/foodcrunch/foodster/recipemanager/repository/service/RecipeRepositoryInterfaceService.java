@@ -1,8 +1,15 @@
 package com.foodcrunch.foodster.recipemanager.repository.service;
 
+import com.foodcrunch.foodster.recipemanager.model.Image;
 import com.foodcrunch.foodster.recipemanager.model.entity.FoodEntity;
 import com.foodcrunch.foodster.recipemanager.model.entity.FoodstuffEntity;
+import com.foodcrunch.foodster.recipemanager.model.entity.ImageEntity;
 import com.foodcrunch.foodster.recipemanager.model.entity.RecipeEntity;
+import com.foodcrunch.foodster.recipemanager.model.entity.StepEntity;
+import com.foodcrunch.foodster.recipemanager.model.recipeModel.Food;
+import com.foodcrunch.foodster.recipemanager.model.recipeModel.Foodstuff;
+import com.foodcrunch.foodster.recipemanager.model.recipeModel.Recipe;
+import com.foodcrunch.foodster.recipemanager.model.recipeModel.Step;
 import com.foodcrunch.foodster.recipemanager.repository.FoodstuffRepository;
 import com.foodcrunch.foodster.recipemanager.repository.RecipeRepository;
 import com.foodcrunch.foodster.recipemanager.repository.RecipeRepositoryInterface;
@@ -16,12 +23,14 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Isolation;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.util.ObjectUtils;
 
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import javax.persistence.Query;
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
+import javax.persistence.criteria.CriteriaUpdate;
 import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
 import javax.persistence.criteria.Subquery;
@@ -36,7 +45,6 @@ public class RecipeRepositoryInterfaceService implements RecipeRepositoryInterfa
 
     private final RecipeRepository recipeRepository;
     private final FoodstuffRepository foodstuffRepository;
-    private final ImageManagerService imageManagerService;
 
     @PersistenceContext
     private EntityManager em;
@@ -47,6 +55,9 @@ public class RecipeRepositoryInterfaceService implements RecipeRepositoryInterfa
             public Predicate toPredicate(Root<RecipeEntity> root, CriteriaQuery<?> criteriaQuery, CriteriaBuilder criteriaBuilder) {
 
                 List<Predicate> predicates = new ArrayList<>();
+                if (!StringUtils.isEmpty(param.get("isVisible"))) {
+                    predicates.add(criteriaBuilder.and(criteriaBuilder.equal(root.get("visible"), param.get("isVisible"))));
+                }
                 if (!StringUtils.isEmpty(param.get("name"))) {
                     predicates.add(criteriaBuilder.and(criteriaBuilder.like(root.get("name"), "%" + param.get("name") + "%")));
                 }
@@ -56,7 +67,7 @@ public class RecipeRepositoryInterfaceService implements RecipeRepositoryInterfa
                 if (!StringUtils.isEmpty(param.get("type"))) {
                     predicates.add(criteriaBuilder.and(criteriaBuilder.equal(root.get("type"), param.get("type"))));
                 }
-                if (!StringUtils.isEmpty(param.get("userId"))) {
+                if (!StringUtils.isEmpty(param.get("userId")) && StringUtils.isEmpty(param.get("isVisible"))) {
                     predicates.add(criteriaBuilder.and(criteriaBuilder.equal(root.get("userId"), param.get("userId"))));
                 }
                 if (!StringUtils.isEmpty(param.get("level"))) {
@@ -122,7 +133,7 @@ public class RecipeRepositoryInterfaceService implements RecipeRepositoryInterfa
                 .setParameter("time", recipeEntity.getTime())
                 .setParameter("type", recipeEntity.getType())
                 .setParameter("user_id", recipeEntity.getUserId())
-                .setParameter("visible", recipeEntity.isVisible())
+                .setParameter("visible", recipeEntity.getVisible())
                 .setParameter("id", recipeEntity.getId())
                 .executeUpdate();
 
@@ -183,4 +194,11 @@ public class RecipeRepositoryInterfaceService implements RecipeRepositoryInterfa
         }
 
     }
+
+    @Override
+    public void updateRecipe(RecipeEntity recipeEntity) {
+        recipeRepository.deleteById(recipeEntity.getId());
+        saveRecipe(recipeEntity);
+    }
+
 }

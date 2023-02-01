@@ -1,3 +1,5 @@
+server:
+  port: 5000
 spring:
   main:
     allow-bean-definition-overriding: true
@@ -10,9 +12,9 @@ spring:
       accept-case-insensitive-properties: true
 
   datasource:
-    url: jdbc:postgresql://ec2-3-225-41-234.compute-1.amazonaws.com:5432/d8jhvfv2mluheo
-    username: ldysxlweoguazb
-    password: bfd875e47e33a8c99562e501b39ec0ec16505f806f87af9899b4f257b40879ee
+    url: jdbc:postgresql://storage.cn6bq9wf3qhu.us-east-1.rds.amazonaws.com:5432/postgres
+    username: postgres
+    password: dxUW9Hsz03EVWCeeRyaC
 
   jpa:
     show-sql: false
@@ -22,6 +24,13 @@ spring:
         dialect: 'org.hibernate.dialect.PostgreSQLDialect'
     hibernate:
       ddl-auto: update
+
+service:
+  user:
+    restriction:
+      max-incomplete: 10
+      minIngredients: 1
+      minSteps: 2
 
 security:
   firebase-props:

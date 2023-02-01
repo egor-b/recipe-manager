@@ -51,7 +51,7 @@ public class PurchaseController {
             @ApiResponse(code = 404, message = "Recipe not found", response = NotFoundException.class),
             @ApiResponse(code = 400, message = "Missing or invalid request body", response = BadRequestException.class),
             @ApiResponse(code = 500, message = "Internal Server error")})
-    public Flux<PurchaseResponse> getPurchase(@PathVariable(value = "id") String userId) {
+    public Flux<PurchaseResponse> getPurchaseByUserId(@PathVariable(value = "id") String userId) {
         return purchaseService.getPurchaseList(userId)
                 .doOnError(error ->
                         log.error(error.getLocalizedMessage()));
@@ -89,8 +89,9 @@ public class PurchaseController {
             @ApiResponse(code = 400, message = "Missing or invalid request body", response = BadRequestException.class),
             @ApiResponse(code = 500, message = "Internal Server error")})
     public void updateCart(@RequestParam(value = "isadd") boolean isadd,
-                               @RequestParam(value = "id") long id) {
-        purchaseService.updateCar(isadd, id);
+                               @RequestParam(value = "id") long id,
+                           @RequestParam(value = "user") String user) {
+        purchaseService.updateCar(isadd, id, user);
     }
 
     @DeleteMapping(path = "delete/cart")
@@ -101,8 +102,7 @@ public class PurchaseController {
             @ApiResponse(code = 400, message = "Missing or invalid request body", response = BadRequestException.class),
             @ApiResponse(code = 500, message = "Internal Server error")})
     public void deletePurchaseFromCart(@RequestParam(value = "recipeid") long recipeId,
-                               @RequestParam(value = "userid") String userid,
-                               @RequestParam(value = "foodid") long foodId) {
-        purchaseRepository.deleteFromCart(foodId, recipeId, userid);
+                               @RequestParam(value = "userid") String userid) {
+        purchaseRepository.deleteRecipeFromCart(recipeId, userid);
     }
 }

@@ -9,5 +9,6 @@ public class PurchaseFoodResponse {
     private String name;
     private String size;
     private String measure;
+    private Boolean isAvailable;
 
 }

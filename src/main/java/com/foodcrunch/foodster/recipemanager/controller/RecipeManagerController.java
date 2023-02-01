@@ -3,7 +3,9 @@ package com.foodcrunch.foodster.recipemanager.controller;
 import com.foodcrunch.foodster.recipemanager.exception.BadRequestException;
 import com.foodcrunch.foodster.recipemanager.exception.ErrorResponse;
 import com.foodcrunch.foodster.recipemanager.exception.NotFoundException;
+import com.foodcrunch.foodster.recipemanager.exception.RecipiesLockedException;
 import com.foodcrunch.foodster.recipemanager.model.entity.RecipeEntity;
+import com.foodcrunch.foodster.recipemanager.model.entity.ReportEntity;
 import com.foodcrunch.foodster.recipemanager.service.RecipeManagerService;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiResponse;
@@ -53,8 +55,7 @@ public class RecipeManagerController {
             @ApiResponse(code = 400, message = "Missing or invalid request body", response = BadRequestException.class),
             @ApiResponse(code = 500, message = "Internal Server error")})
     public Flux<RecipeEntity> getRecipeById(@PathVariable(value = "id") Long recipeId) {
-        Flux<RecipeEntity> d = recipeManagerService.retrieveRecipeById(recipeId);
-        return d
+        return recipeManagerService.retrieveRecipeById(recipeId)
                 .doOnNext(success ->
                         log.info("Recipe '{}' was returned. Id is {}", success.getName(), success.getId()))
                 .doOnError(error ->
@@ -82,7 +83,7 @@ public class RecipeManagerController {
                         log.debug(error.getStackTrace().toString()));
     }
 
-    @GetMapping(path = "/user/{id}")
+    @PostMapping(path = "/user/{id}")
     @ResponseStatus(HttpStatus.OK)
     @ApiOperation(value = "Retrieve recipes", notes = "Recipes search by user ID")
     @ApiResponses(value = {@ApiResponse(code = 200, message = "", response = RecipeEntity.class, responseContainer = "Recipe"),
@@ -102,11 +103,23 @@ public class RecipeManagerController {
                         log.debug(error.getStackTrace().toString()));
     }
 
+    @PostMapping(path = "report")
+    @ApiOperation(value = "Submit report", notes = "Submit a bad recipe report")
+    public void reportRecipe(@Valid @RequestBody ReportEntity report) {
+
+    }
     @Transactional
     @PostMapping(path = "save")
     @ResponseStatus(HttpStatus.CREATED)
-    public void saveRecipe(@Valid @RequestBody RecipeEntity recipeEntity) {
-        recipeManagerService.saveRecipe(recipeEntity);
+    public Flux saveRecipe(@Valid @RequestBody RecipeEntity recipeEntity) {
+        return recipeManagerService.saveRecipe(recipeEntity);
+    }
+
+    @Transactional
+    @PostMapping(path = "update")
+    @ResponseStatus(HttpStatus.CREATED)
+    public Flux updateRecipe(@Valid @RequestBody RecipeEntity recipeEntity) {
+        return recipeManagerService.updateRecipe(recipeEntity);
     }
 
     @ExceptionHandler({BadRequestException.class, MethodArgumentTypeMismatchException.class})
@@ -115,10 +128,16 @@ public class RecipeManagerController {
         return new ResponseEntity(errorResponse, HttpStatus.BAD_REQUEST);
     }
 
+    @ExceptionHandler(RecipiesLockedException.class)
+    public final ResponseEntity<RecipeEntity> recipesLockedException(Exception e) {
+        ErrorResponse errorResponse = new ErrorResponse("Bad request", e.getLocalizedMessage());
+        return new ResponseEntity(errorResponse, HttpStatus.LOCKED);
+    }
+
     @ExceptionHandler({NullPointerException.class})
     public final ResponseEntity<RecipeEntity> processNulPointerThenReturnBadRequestException(Exception e) {
         ErrorResponse errorResponse = new ErrorResponse("Bad request", "Was sent incorrect request.");
-        return new ResponseEntity(errorResponse, HttpStatus.BAD_REQUEST);
+        return new ResponseEntity(errorResponse, HttpStatus.I_AM_A_TEAPOT);
     }
 
     @ExceptionHandler(NotFoundException.class)

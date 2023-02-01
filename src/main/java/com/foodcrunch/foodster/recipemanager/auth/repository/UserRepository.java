@@ -15,11 +15,12 @@ public interface UserRepository extends JpaRepository<UserEntity, Long> {
 
     @Modifying(clearAutomatically = true)
     @Transactional
+    @Query("UPDATE UserEntity ue SET ue.violation = ?2 WHERE ue.uid = ?1")
+    void updateUserByUID(String uid, Integer violation);
+
+    @Modifying(clearAutomatically = true)
+    @Transactional
     @Query("UPDATE UserEntity ue SET ue.email = ?1 WHERE ue.uid = ?2")
     void updateUserEmail(String email, String uid);
-
-    @Modifying(flushAutomatically = true, clearAutomatically = true)
-    @Query(value = "UPDATE users.user SET name = :name, lname = :lname WHERE uid = :uid", nativeQuery = true)
-    void updateUserName(@Param("name") String name, @Param("lname") String lName, @Param("uid") String uid);
 
 }
