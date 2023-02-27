@@ -6,6 +6,7 @@ import com.foodcrunch.foodster.recipemanager.constant.LogLevel;
 import com.foodcrunch.foodster.recipemanager.exception.BadRequestException;
 import com.foodcrunch.foodster.recipemanager.exception.NotFoundException;
 import com.foodcrunch.foodster.recipemanager.exception.RecipiesLockedException;
+import com.foodcrunch.foodster.recipemanager.model.ResponseRecipe;
 import com.foodcrunch.foodster.recipemanager.model.entity.RecipeEntity;
 import com.foodcrunch.foodster.recipemanager.repository.RecipeRepository;
 import com.foodcrunch.foodster.recipemanager.repository.RecipeRepositoryInterface;
@@ -13,6 +14,7 @@ import io.micrometer.core.instrument.util.StringUtils;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
@@ -40,9 +42,10 @@ public class RecipeManagerService {
     @Value("${service.user.restriction.minSteps}")
     private Integer minSteps;
 
-    public Flux<RecipeEntity> getAllRecipesInRowByPageNumber(Integer pageNumber) {
+    public Flux<ResponseRecipe> getAllRecipesInRowByPageNumber(Integer pageNumber) {
         PageRequest page = PageRequest.of(pageNumber, 20);
-        return Flux.fromIterable(recipeRepository.findAll(page).getContent());
+        Page<RecipeEntity> response = recipeRepository.findAll(page);
+        return Flux.just(buildResponse(response));
     }
 
     public Flux<RecipeEntity> retrieveRecipeById(Long id) {
@@ -55,8 +58,8 @@ public class RecipeManagerService {
         return Flux.just(recipeEntity);
     }
 
-    public Flux<RecipeEntity> findRecipesByCriteria(int pageNumber, int pageSize, String sortKey, Sort.Direction sortOrder, Map<String, String> criterias) {
-        if (pageSize>100) {
+    public Flux<ResponseRecipe> findRecipesByCriteria(int pageNumber, int pageSize, String sortKey, Sort.Direction sortOrder, Map<String, String> criterias) {
+        if (pageSize > 100) {
             String message = logService.buildLogEvent(TOO_MANY_RECIPES, LogLevel.ERROR, null, pageSize);
             return Flux.error(new BadRequestException(message));
         }
@@ -71,19 +74,22 @@ public class RecipeManagerService {
         }
 
         PageRequest page = PageRequest.of(pageNumber, pageSize, Sort.by(sortOrder, sortKey));
-        return Flux.fromIterable(recipeRepositoryInterface.findByPagingCriteria(page, criterias));
+        Page<RecipeEntity> response = recipeRepositoryInterface.findByPagingCriteria(page, criterias);
+        return Flux.just(buildResponse(response));
     }
 
-    public Flux<RecipeEntity> getRecipesByUserId(String userId, int pageNumber, int pageSize, String sortKey, Sort.Direction sortOrder, Map<String, String> criterias) {
-        if (pageSize>100) {
+    public Flux<ResponseRecipe> getRecipesByUserId(String userId, int pageNumber, int pageSize, String sortKey, Sort.Direction sortOrder, Map<String, String> criterias) {
+        if (pageSize > 100) {
             String message = logService.buildLogEvent(TOO_MANY_RECIPES, LogLevel.ERROR, null, pageSize);
             return Flux.error(new BadRequestException(message));
         }
         PageRequest page = PageRequest.of(pageNumber, pageSize, Sort.by(sortOrder, sortKey));
         if (criterias.isEmpty()) {
-            return Flux.fromIterable(recipeRepository.findByUserIdEquals(page, userId));
+            Page<RecipeEntity> response = recipeRepository.findByUserIdEquals(page, userId);
+            return Flux.just(buildResponse(response));
         } else {
-            return Flux.fromIterable(recipeRepositoryInterface.findByPagingCriteria(page, criterias));
+            Page<RecipeEntity> response = recipeRepositoryInterface.findByPagingCriteria(page, criterias);
+            return Flux.just(buildResponse(response));
         }
 
     }
@@ -110,6 +116,7 @@ public class RecipeManagerService {
     public void submitReport() {
 
     }
+
     private RecipeEntity updateViolation(String isVisible, RecipeEntity recipeEntity) {
         UserEntity user = userRepository.findByUid(recipeEntity.getUserId());
         if (isVisible.equals("false")) {
@@ -120,6 +127,13 @@ public class RecipeManagerService {
         }
         recipeEntity.setVisible(isVisible);
         return recipeEntity;
+    }
+
+    private ResponseRecipe buildResponse(Page<RecipeEntity> page) {
+        ResponseRecipe recipeResponse = new ResponseRecipe();
+        recipeResponse.setRecipeList(page.getContent());
+        recipeResponse.setTotalPages(page.getTotalPages());
+        return  recipeResponse;
     }
 
 }

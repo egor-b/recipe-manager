@@ -2,7 +2,7 @@ package com.foodcrunch.foodster.recipemanager.service;
 
 import com.foodcrunch.foodster.recipemanager.model.entity.FoodEntity;
 import com.foodcrunch.foodster.recipemanager.model.entity.StepEntity;
-import com.foodcrunch.foodster.recipemanager.model.entity.FoodstuffEntity;
+import com.foodcrunch.foodster.recipemanager.model.entity.ProductEntity;
 import com.foodcrunch.foodster.recipemanager.model.entity.ImageEntity;
 import com.foodcrunch.foodster.recipemanager.model.entity.RecipeEntity;
 
@@ -39,13 +39,13 @@ public class TestValue {
             recipeEntity.setVisible("true");
 
             for(int ri = 0; ri < numOfIng; ri++) {
-                FoodstuffEntity foodstuffEntity = new FoodstuffEntity();
+                ProductEntity productEntity = new ProductEntity();
                 FoodEntity cookFoodEntitie = new FoodEntity();
-                foodstuffEntity.setName("bla" + ri);
-                foodstuffEntity.setImage("");
-                cookFoodEntitie.setMeasure("mgr");
-                cookFoodEntitie.setSize(2+ri);
-                cookFoodEntitie.setFoodstuffEntity(foodstuffEntity);
+                productEntity.setName("bla" + ri);
+                productEntity.setImage("");
+                cookFoodEntitie.setUnit("mgr");
+//                cookFoodEntitie.setSize(2+ri);
+//                cookFoodEntitie.setFoodstuffEntity(productEntity);
                 cookFoodEntities.add(cookFoodEntitie);
             }
 
@@ -75,21 +75,21 @@ public class TestValue {
         return recipeEntities;
     }
 
-    public static List<FoodstuffEntity> getFoodList() {
-        List<FoodstuffEntity> foodstuffEntityList = new ArrayList<>();
+    public static List<ProductEntity> getFoodList() {
+        List<ProductEntity> productEntityList = new ArrayList<>();
 
-        FoodstuffEntity foodstuffEntity1 = new FoodstuffEntity();
-        foodstuffEntity1.setId(1L);
-        foodstuffEntity1.setName("Berry");
+        ProductEntity productEntity1 = new ProductEntity();
+        productEntity1.setId(1L);
+        productEntity1.setName("Berry");
 
-        FoodstuffEntity foodstuffEntity2 = new FoodstuffEntity();
-        foodstuffEntity2.setId(2L);
-        foodstuffEntity2.setName("Butter");
+        ProductEntity productEntity2 = new ProductEntity();
+        productEntity2.setId(2L);
+        productEntity2.setName("Butter");
 
-        foodstuffEntityList.add(foodstuffEntity1);
-        foodstuffEntityList.add(foodstuffEntity2);
+        productEntityList.add(productEntity1);
+        productEntityList.add(productEntity2);
 
-        return foodstuffEntityList;
+        return productEntityList;
     }
 
     public static RecipeEntity getValidRecipe() {

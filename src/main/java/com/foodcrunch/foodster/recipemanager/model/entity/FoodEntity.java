@@ -1,6 +1,7 @@
 package com.foodcrunch.foodster.recipemanager.model.entity;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
+import lombok.Data;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
@@ -15,6 +16,7 @@ import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
 import java.io.Serializable;
 
+@Data
 @Entity
 @Table(name = "FOOD")
 public class FoodEntity implements Serializable {
@@ -27,25 +29,18 @@ public class FoodEntity implements Serializable {
     @ManyToOne
     private RecipeEntity recipeEntity;
 
-    @JsonProperty("foodstuff")
+    @JsonProperty("product")
     @ManyToOne(fetch = FetchType.EAGER, cascade = CascadeType.PERSIST)
     @JoinColumn(name = "FOOD_ID", referencedColumnName = "ID")
-//    @Column(name = "FOOD_ID ", nullable = false)
-    private FoodstuffEntity foodstuffEntity;
+    private ProductEntity productEntity;
 
-    @Column(name = "SIZE", nullable = false)
-    private int size;
+    @Column(name = "AMOUNT", nullable = false)
+    private Double amount;
 
-    @Column(name = "MEASURE", nullable = false)
-    private String measure;
+    @Column(name = "UNIT", nullable = false)
+    private String unit;
 
-    public long getId() { return id; }
-    public FoodstuffEntity getFoodstuffEntity() { return foodstuffEntity; }
-    public int getSize() { return  size; }
-    public String getMeasure() { return measure; }
-
-    public void setId(long id) { this.id = id; }
-    public void setFoodstuffEntity(FoodstuffEntity foodstuffEntity) { this.foodstuffEntity = foodstuffEntity; }
-    public void setSize(int size) { this.size = size; }
-    public void setMeasure(String measure) { this.measure = measure; }
+    public void setUnit(String unit) {
+        this.unit = unit.trim();
+    }
 }

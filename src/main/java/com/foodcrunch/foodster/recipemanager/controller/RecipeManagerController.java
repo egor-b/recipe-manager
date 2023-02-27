@@ -4,6 +4,7 @@ import com.foodcrunch.foodster.recipemanager.exception.BadRequestException;
 import com.foodcrunch.foodster.recipemanager.exception.ErrorResponse;
 import com.foodcrunch.foodster.recipemanager.exception.NotFoundException;
 import com.foodcrunch.foodster.recipemanager.exception.RecipiesLockedException;
+import com.foodcrunch.foodster.recipemanager.model.ResponseRecipe;
 import com.foodcrunch.foodster.recipemanager.model.entity.RecipeEntity;
 import com.foodcrunch.foodster.recipemanager.model.entity.ReportEntity;
 import com.foodcrunch.foodster.recipemanager.service.RecipeManagerService;
@@ -38,10 +39,8 @@ public class RecipeManagerController {
             @ApiResponse(code = 404, message = "Recipe not found", response = NotFoundException.class),
             @ApiResponse(code = 400, message = "Missing or invalid request body", response = BadRequestException.class),
             @ApiResponse(code = 500, message = "Internal Server error")})
-    public Flux<RecipeEntity> getRecipes(@RequestParam(value = "page", defaultValue = "0") int page) {
+    public Flux<ResponseRecipe> getRecipes(@RequestParam(value = "page", defaultValue = "0") int page) {
         return recipeManagerService.getAllRecipesInRowByPageNumber(page)
-                .doOnNext(success ->
-                        log.info("Recipe '{}' was returned. Id is {}", success.getName(), success.getId()))
                 .doOnError(error ->
                         log.debug(error.getStackTrace().toString()));
 
@@ -71,14 +70,12 @@ public class RecipeManagerController {
             @ApiResponse(code = 400, message = "Missing or invalid request body"),
             @ApiResponse(code = 500, message = "Internal Server error")})
 
-    public Flux<RecipeEntity> findAllByCriteria(@RequestParam(value = "page", defaultValue = "0") int pageNumber,
+    public Flux<ResponseRecipe> findAllByCriteria(@RequestParam(value = "page", defaultValue = "0") int pageNumber,
                                                 @RequestParam(value = "sort_field", defaultValue = "date") String sortKey,
                                                 @RequestParam(value = "page_size", defaultValue = "20") int pageSize,
                                                 @RequestParam(value = "order", defaultValue = "DESC") Sort.Direction sortOrder,
                                                 @RequestBody Map<String, String> body) {
         return recipeManagerService.findRecipesByCriteria(pageNumber,pageSize, sortKey, sortOrder, body)
-                .doOnNext(success ->
-                        log.info("Recipe '" + success.getName() + "' was found. id = " + success.getId()))
                 .doOnError(error ->
                         log.debug(error.getStackTrace().toString()));
     }
@@ -90,15 +87,13 @@ public class RecipeManagerController {
             @ApiResponse(code = 404, message = "Recipe not found"),
             @ApiResponse(code = 400, message = "Missing or invalid request body"),
             @ApiResponse(code = 500, message = "Internal Server error")})
-    public Flux<RecipeEntity> getRecipeByUserId(@PathVariable(value = "id") String userId,
+    public Flux<ResponseRecipe> getRecipeByUserId(@PathVariable(value = "id") String userId,
                                                 @RequestParam(value = "page", defaultValue = "0") int pageNumber,
                                                 @RequestParam(value = "page_size", defaultValue = "20") int pageSize,
                                                 @RequestParam(value = "sort_field", defaultValue = "date") String sortKey,
                                                 @RequestParam(value = "order", defaultValue = "ASC") Sort.Direction sortOrder,
                                                 @RequestBody Map<String, String> body) {
         return recipeManagerService.getRecipesByUserId(userId, pageNumber, pageSize, sortKey, sortOrder, body)
-                .doOnNext(success ->
-                        log.info("Recipe '" + success.getName() + "' was found. id = " + success.getId() + ", userId = " + success.getUserId()))
                 .doOnError(error ->
                         log.debug(error.getStackTrace().toString()));
     }

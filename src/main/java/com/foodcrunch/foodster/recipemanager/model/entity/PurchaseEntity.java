@@ -29,9 +29,9 @@ public class PurchaseEntity {
     @Column(name = "SERVE", nullable = false)
     private int serve;
 
-    @JsonProperty("size")
-    @Column(name = "SIZE", nullable = true)
-    private Double size;
+    @JsonProperty("amount")
+    @Column(name = "AMOUNT")
+    private Double amount;
 
     @JsonProperty("isAvailable")
     @Column(name = "IS_AVAILABLE", nullable = false)

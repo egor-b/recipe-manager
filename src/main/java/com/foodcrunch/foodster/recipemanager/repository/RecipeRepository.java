@@ -10,4 +10,5 @@ import org.springframework.stereotype.Repository;
 @Repository
 public interface RecipeRepository extends JpaRepository<RecipeEntity, Long>, JpaSpecificationExecutor<RecipeEntity> {
     Page<RecipeEntity> findByUserIdEquals(Pageable pageable, String id);
+    RecipeEntity findAllById(Long id);
 }

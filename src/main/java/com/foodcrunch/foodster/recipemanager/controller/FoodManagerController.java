@@ -2,7 +2,7 @@ package com.foodcrunch.foodster.recipemanager.controller;
 
 import com.foodcrunch.foodster.recipemanager.exception.BadRequestException;
 import com.foodcrunch.foodster.recipemanager.exception.ErrorResponse;
-import com.foodcrunch.foodster.recipemanager.model.entity.FoodstuffEntity;
+import com.foodcrunch.foodster.recipemanager.model.entity.ProductEntity;
 import com.foodcrunch.foodster.recipemanager.model.entity.RecipeEntity;
 import com.foodcrunch.foodster.recipemanager.service.RecipeFoodManagerService;
 import io.swagger.annotations.ApiOperation;
@@ -31,13 +31,13 @@ public class FoodManagerController {
     @GetMapping(path = "/search")
     @ResponseStatus(HttpStatus.OK)
     @ApiOperation(value = "Retrieve food", notes = "search food by name")
-    @ApiResponses(value = {@ApiResponse(code = 200, message = "", response = FoodstuffEntity.class, responseContainer = "Recipe"),
+    @ApiResponses(value = {@ApiResponse(code = 200, message = "", response = ProductEntity.class, responseContainer = "Recipe"),
             @ApiResponse(code = 500, message = "Internal Server error")})
-    public Flux<FoodstuffEntity> getFoodByName(@RequestParam(value = "name") String name,
-                                               @RequestParam(value = "page", defaultValue = "0") int pageNumber,
-                                               @RequestParam(value = "page_size", defaultValue = "15") int pageSize,
-                                               @RequestParam(value = "sort_field", defaultValue = "name") String sortKey,
-                                               @RequestParam(value = "order", defaultValue = "ASC") Sort.Direction sortOrder) {
+    public Flux<ProductEntity> getFoodByName(@RequestParam(value = "name") String name,
+                                             @RequestParam(value = "page", defaultValue = "0") int pageNumber,
+                                             @RequestParam(value = "page_size", defaultValue = "15") int pageSize,
+                                             @RequestParam(value = "sort_field", defaultValue = "name") String sortKey,
+                                             @RequestParam(value = "order", defaultValue = "ASC") Sort.Direction sortOrder) {
         return recipeFoodManagerService.getFoodByName(name,pageNumber,pageSize,sortOrder,sortKey);
     }
 

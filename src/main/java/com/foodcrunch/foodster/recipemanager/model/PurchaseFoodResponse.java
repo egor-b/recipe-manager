@@ -7,8 +7,8 @@ public class PurchaseFoodResponse {
 
     private long id;
     private String name;
-    private String size;
-    private String measure;
+    private String amount;
+    private String unit;
     private Boolean isAvailable;
 
 }

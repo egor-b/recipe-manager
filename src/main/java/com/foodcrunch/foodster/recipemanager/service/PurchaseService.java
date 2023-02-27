@@ -5,7 +5,6 @@ import com.foodcrunch.foodster.recipemanager.model.PurchaseResponse;
 import com.foodcrunch.foodster.recipemanager.model.entity.FoodEntity;
 import com.foodcrunch.foodster.recipemanager.model.entity.PurchaseEntity;
 import com.foodcrunch.foodster.recipemanager.repository.FoodRepository;
-import com.foodcrunch.foodster.recipemanager.repository.FoodstuffRepository;
 import com.foodcrunch.foodster.recipemanager.repository.PurchaseRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -14,7 +13,6 @@ import reactor.core.publisher.Flux;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 
 @Slf4j
 @Service
@@ -22,11 +20,14 @@ import java.util.Map;
 public class PurchaseService {
 
     private final PurchaseRepository purchaseRepository;
-    private final FoodstuffRepository foodstuffRepository;
     private final FoodRepository foodRepository;
 
+    public void deletePurchase(PurchaseEntity purchase) {
+        purchaseRepository.deleteFromCart(purchase.getFood(), purchase.getRecipeId(), purchase.getUserId());
+    }
     public void savePurchase(PurchaseEntity req) {
         purchaseRepository.save(req);
+
     }
 
     public Flux<PurchaseResponse> getPurchaseList(String userId) {
@@ -49,13 +50,13 @@ public class PurchaseService {
                     PurchaseFoodResponse pfr = new PurchaseFoodResponse();
                     FoodEntity fe = foodRepository.findById(p.getFood()).get();
                     pfr.setId(p.getId());
-                    pfr.setName(fe.getFoodstuffEntity().getName());
-                    pfr.setMeasure(fe.getMeasure());
+                    pfr.setName(fe.getProductEntity().getName());
+                    pfr.setUnit(fe.getUnit());
                     pfr.setIsAvailable(p.isAvailable());
-                    if (p.getSize() != 0 ){
-                        pfr.setSize(String.valueOf(p.getSize()));
+                    if (p.getAmount() != 0 ){
+                        pfr.setAmount(String.valueOf(p.getAmount()));
                     } else {
-                        pfr.setSize(String.valueOf(fe.getSize()));
+                        pfr.setAmount(String.valueOf(fe.getAmount()));
                     }
                     lfe.add(pfr);
                 }

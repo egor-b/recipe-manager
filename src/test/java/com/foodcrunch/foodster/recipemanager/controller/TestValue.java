@@ -2,7 +2,7 @@ package com.foodcrunch.foodster.recipemanager.controller;
 
 import com.foodcrunch.foodster.recipemanager.model.entity.FoodEntity;
 import com.foodcrunch.foodster.recipemanager.model.entity.StepEntity;
-import com.foodcrunch.foodster.recipemanager.model.entity.FoodstuffEntity;
+import com.foodcrunch.foodster.recipemanager.model.entity.ProductEntity;
 import com.foodcrunch.foodster.recipemanager.model.entity.ImageEntity;
 import com.foodcrunch.foodster.recipemanager.model.entity.RecipeEntity;
 import reactor.core.publisher.Flux;
@@ -21,31 +21,31 @@ public class TestValue {
     public static String getValidId = "1";
     public static long getValidLongId = 1;
 
-    public static List<RecipeEntity> getListValidRecipes(Integer count) {
+//    public static RecipeEntity getListValidRecipes(Integer count) {
+//
+//        List<RecipeEntity> recipeEntities = new ArrayList<>();
+//
+//        for(int i = 0; i < count; i++) {
+//            RecipeEntity recipeEntity = new RecipeEntity();
+//            recipeEntity.setId(i);
+//            recipeEntity.setName("Meatball_" + i);
+//            recipeEntity.setTime(65132+i);
+//            recipeEntity.setServe(i);
+//            recipeEntity.setLevel(3.5);
+//            recipeEntity.setType("type_" + i);
+//            recipeEntity.setAbout("About_" + i);
+//            recipeEntity.setUserId("sds");
+//            recipeEntity.setLang("EN");
+//            recipeEntity.setVisible("true");
+//            recipeEntities.add(recipeEntity);
+//        }
+//
+//        return recipeEntities;
+//    }
 
-        List<RecipeEntity> recipeEntities = new ArrayList<>();
-
-        for(int i = 0; i < count; i++) {
-            RecipeEntity recipeEntity = new RecipeEntity();
-            recipeEntity.setId(i);
-            recipeEntity.setName("Meatball_" + i);
-            recipeEntity.setTime(65132+i);
-            recipeEntity.setServe(i);
-            recipeEntity.setLevel(3.5);
-            recipeEntity.setType("type_" + i);
-            recipeEntity.setAbout("About_" + i);
-            recipeEntity.setUserId("sds");
-            recipeEntity.setLang("EN");
-            recipeEntity.setVisible("true");
-            recipeEntities.add(recipeEntity);
-        }
-
-        return recipeEntities;
-    }
-
-    public static RecipeEntity getValidRecipe() {
-        return getListValidRecipes(1).get(0);
-    }
+//    public static RecipeEntity getValidRecipe() {
+//        return getListValidRecipes(1).get(0);
+//    }
 
     public static Map<String, String> getRequestBody() {
         Map<String, String> map = new HashMap<>();
@@ -55,16 +55,16 @@ public class TestValue {
         return map;
     }
 
-    public static Flux<FoodstuffEntity> getFoodList(Integer count) {
-        List<FoodstuffEntity> foodstuffEntityList = new ArrayList<>();
+    public static Flux<ProductEntity> getFoodList(Integer count) {
+        List<ProductEntity> productEntityList = new ArrayList<>();
         for(int i = 0; i < count; i++) {
-            FoodstuffEntity foodstuffEntity = new FoodstuffEntity();
-            foodstuffEntity.setId(i+1);
-            foodstuffEntity.setName("Berry"+i);
-            foodstuffEntityList.add(foodstuffEntity);
+            ProductEntity productEntity = new ProductEntity();
+            productEntity.setId(i+1);
+            productEntity.setName("Berry"+i);
+            productEntityList.add(productEntity);
         }
 
-        return Flux.fromIterable(foodstuffEntityList);
+        return Flux.fromIterable(productEntityList);
     }
 
     public static RecipeEntity getRecipe(Integer numOfIng, Integer numOfSteps) {
@@ -85,13 +85,13 @@ public class TestValue {
         recipeEntity.setVisible("true");
 
         for(int i = 0; i < numOfIng; i++) {
-            FoodstuffEntity foodstuffEntity = new FoodstuffEntity();
+            ProductEntity productEntity = new ProductEntity();
             FoodEntity cookFoodEntitie = new FoodEntity();
-            foodstuffEntity.setName("bla" + i);
-            foodstuffEntity.setImage("");
-            cookFoodEntitie.setMeasure("mgr");
-            cookFoodEntitie.setSize(2+i);
-            cookFoodEntitie.setFoodstuffEntity(foodstuffEntity);
+            productEntity.setName("bla" + i);
+            productEntity.setImage("");
+            cookFoodEntitie.setUnit("mgr");
+//            cookFoodEntitie.setSize(2+i);
+//            cookFoodEntitie.setFoodstuffEntity(productEntity);
             cookFoodEntities.add(cookFoodEntitie);
         }
 

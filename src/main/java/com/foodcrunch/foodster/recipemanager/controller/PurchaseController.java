@@ -70,15 +70,15 @@ public class PurchaseController {
         return purchaseService.getRecipePurchase(foodId, recipeId, userid);
     }
 
-    @DeleteMapping(path = "delete/{id}")
+    @DeleteMapping(path = "delete")
     @ResponseStatus(HttpStatus.OK)
     @ApiOperation(value = "Delete purchase", notes = "Delete user's purchase")
     @ApiResponses(value = {//@ApiResponse(code = 200, message = "", response = RecipeEntity.class, responseContainer = "Recipe"),
             @ApiResponse(code = 404, message = "Recipe not found", response = NotFoundException.class),
             @ApiResponse(code = 400, message = "Missing or invalid request body", response = BadRequestException.class),
             @ApiResponse(code = 500, message = "Internal Server error")})
-    public void deletePurchase(@PathVariable(value = "id") long id) {
-        purchaseRepository.deleteById(id);
+    public void deletePurchase(@RequestBody PurchaseEntity purchase) {
+        purchaseService.deletePurchase(purchase);
     }
 
     @PutMapping(path = "cart")
