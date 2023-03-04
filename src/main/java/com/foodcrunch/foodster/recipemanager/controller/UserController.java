@@ -61,4 +61,16 @@ public class UserController {
     public void findUser(@RequestBody User user) {
         userService.updateUserPic(user);
     }
+
+    @DeleteMapping(path = "/{uid}")
+    @ResponseStatus(HttpStatus.ACCEPTED)
+    public void deleteUser(@PathVariable(value = "uid") String uid) {
+        userService.deleteUser(uid);
+    }
+
+    @DeleteMapping(path = "/apple/{authCode}/{uid}")
+    @ResponseStatus(HttpStatus.ACCEPTED)
+    public void deleteAppleUser(@PathVariable(value = "authCode") String authCode, @PathVariable(value = "uid") String uid) {
+        userService.deleteAppleUser(authCode, uid);
+    }
 }

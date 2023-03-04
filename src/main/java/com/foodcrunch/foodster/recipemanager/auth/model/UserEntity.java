@@ -57,6 +57,9 @@ public class UserEntity {
     @Column(name = "VIOLATION", nullable = false)
     private Integer violation = 0;
 
+    @Column(name = "IS_TERMS_ACCEPTED", nullable = false)
+    private boolean isTermsAccepted = true;
+
 //    @ManyToMany(fetch = FetchType.EAGER)
 //    @JoinTable(name = "USER_ROLE", schema = "USERS",
 //            joinColumns = @JoinColumn(name = "USER_ID", referencedColumnName = "ID"),

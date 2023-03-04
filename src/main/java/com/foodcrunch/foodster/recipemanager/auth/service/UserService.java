@@ -21,6 +21,7 @@ public class UserService {
 
     private final UserRepository userRepository;
     private final UserUpdateRepository userUpdateRepository;
+    private final  AppleSignInService appleSignInService;
 
     public void createUser(User user) {
         UserEntity checkUser = userRepository.findByUid(user.getUid());
@@ -37,8 +38,8 @@ public class UserService {
     public final void emailVerificationRequest(String email) {
         try {
             FirebaseAuth.getInstance().generateEmailVerificationLink(email);
-        } catch (FirebaseAuthException err) {
-            err.getStackTrace();
+        } catch (FirebaseAuthException e) {
+            log.error(e.getLocalizedMessage());
         }
     }
 
@@ -52,15 +53,24 @@ public class UserService {
         return Flux.just(userEntity);
     }
 
-//    public Flux<UserEntity> findUserByUserId(Long id) {
-//        UserEntity userEntity = userRepository.findById(id).orElse(null);
-//        if (userEntity == null) {
-//            String message = String.format("User was not found by id {}", id);
-//            log.info(message);
-//            return Flux.error(new UserNotFoundException(message));
-//        }
-//        return Flux.just(userEntity);
-//    }
+    public void deleteUser(String uid) {
+        try {
+            FirebaseAuth.getInstance().deleteUser(uid);
+            userRepository.deleteUser(uid);
+        } catch (FirebaseAuthException e) {
+            log.error(e.getLocalizedMessage());
+        }
+    }
+
+    public void deleteAppleUser(String authCode, String uid) {
+        try {
+            appleSignInService.revokeAppleAccount(authCode);
+            FirebaseAuth.getInstance().deleteUser(uid);
+            userRepository.deleteUser(uid);
+        } catch ( Exception e ) {
+            log.error(e.getLocalizedMessage());
+        }
+    }
 
     @Transactional
     public void updateUserPic(User user) {

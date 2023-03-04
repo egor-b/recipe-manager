@@ -31,6 +31,12 @@ service:
       max-incomplete: 10
       minIngredients: 1
       minSteps: 2
+  apple:
+    key-id: 89S3CH632C
+    team-id: 4NW94WU93C
+    client-id: com.foodcrunch.foodmonster
+    apple-auth-url: https://appleid.apple.com/auth/token
+    apple-revoke-url: https://appleid.apple.com/auth/revoke
 
 security:
   firebase-props:

@@ -8,6 +8,8 @@ import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
+
 @Repository
 public interface UserRepository extends JpaRepository<UserEntity, Long> {
 
@@ -22,5 +24,10 @@ public interface UserRepository extends JpaRepository<UserEntity, Long> {
     @Transactional
     @Query("UPDATE UserEntity ue SET ue.email = ?1 WHERE ue.uid = ?2")
     void updateUserEmail(String email, String uid);
+
+    @Modifying
+    @Transactional
+    @Query(value = "DELETE FROM USERS.USER WHERE uid IN (:uid) ", nativeQuery = true)
+    void deleteUser(@Param(value = "uid") String uid);
 
 }

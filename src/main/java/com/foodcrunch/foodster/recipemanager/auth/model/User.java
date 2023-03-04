@@ -19,5 +19,6 @@ public class User {
     private String pic;
     private Role role;
     private String accountType;
+    private boolean isTermsAccepted;
 
 }
