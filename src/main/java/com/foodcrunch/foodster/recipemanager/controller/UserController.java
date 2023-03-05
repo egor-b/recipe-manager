@@ -3,15 +3,23 @@ package com.foodcrunch.foodster.recipemanager.controller;
 import com.foodcrunch.foodster.recipemanager.auth.model.User;
 import com.foodcrunch.foodster.recipemanager.auth.model.UserEntity;
 import com.foodcrunch.foodster.recipemanager.auth.service.UserService;
+import com.foodcrunch.foodster.recipemanager.exception.BadRequestException;
+import com.foodcrunch.foodster.recipemanager.exception.ErrorResponse;
 import com.foodcrunch.foodster.recipemanager.model.entity.RecipeEntity;
+import com.google.firebase.auth.FirebaseAuthException;
+import com.mashape.unirest.http.exceptions.UnirestException;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiResponse;
 import io.swagger.annotations.ApiResponses;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.method.annotation.MethodArgumentTypeMismatchException;
 import reactor.core.publisher.Flux;
+
+import java.io.IOException;
 
 @Slf4j
 @RequiredArgsConstructor
@@ -72,5 +80,11 @@ public class UserController {
     @ResponseStatus(HttpStatus.ACCEPTED)
     public void deleteAppleUser(@PathVariable(value = "authCode") String authCode, @PathVariable(value = "uid") String uid) {
         userService.deleteAppleUser(authCode, uid);
+    }
+
+    @ExceptionHandler({UnirestException.class, IOException.class, FirebaseAuthException.class})
+    public final ResponseEntity general(Exception e) {
+        ErrorResponse errorResponse = new ErrorResponse("ERROR", e.getLocalizedMessage());
+        return new ResponseEntity(errorResponse, HttpStatus.INTERNAL_SERVER_ERROR);
     }
 }

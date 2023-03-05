@@ -7,12 +7,15 @@ import com.foodcrunch.foodster.recipemanager.auth.repository.UserRepository;
 import com.foodcrunch.foodster.recipemanager.auth.repository.UserUpdateRepository;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseAuthException;
+import com.mashape.unirest.http.exceptions.UnirestException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.ObjectUtils;
 import reactor.core.publisher.Flux;
+
+import java.io.IOException;
 
 @Slf4j
 @Service
@@ -67,7 +70,11 @@ public class UserService {
             appleSignInService.revokeAppleAccount(authCode);
             FirebaseAuth.getInstance().deleteUser(uid);
             userRepository.deleteUser(uid);
-        } catch ( Exception e ) {
+        } catch (UnirestException e) {
+            log.error(e.getLocalizedMessage());
+        } catch (IOException e) {
+            log.error(e.getLocalizedMessage());
+        } catch (FirebaseAuthException e) {
             log.error(e.getLocalizedMessage());
         }
     }
