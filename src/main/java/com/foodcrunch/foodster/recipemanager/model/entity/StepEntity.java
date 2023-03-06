@@ -25,7 +25,7 @@ public class StepEntity implements Serializable {
     @Column(name = "STEP_NUMBER", nullable = false)
     private int stepNumber;
 
-    @Column(name = "STEP", nullable = false)
+    @Column(name = "STEP", length = 1000, nullable = false)
     private String step;
 
     @JsonProperty("pic")

@@ -34,12 +34,12 @@ public class RecipeEntity implements Serializable {
     @Column(name = "TYPE", nullable = false)
     private String type;
 
-    @Column(name = "ABOUT", nullable = false)
+    @Column(name = "ABOUT", length = 1000, nullable = false)
     private String about;
 
     @JsonProperty("timestamp")
     @Column(name = "DATE", nullable = false)
-    private String date;// = new Date();
+    private String date;
 
     @Column(name = "USER_ID", nullable = true)
     private String userId;

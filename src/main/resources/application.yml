@@ -12,9 +12,11 @@ spring:
       accept-case-insensitive-properties: true
 
   datasource:
-    url: jdbc:postgresql://storage.cn6bq9wf3qhu.us-east-1.rds.amazonaws.com:5432/postgres
+    hikari:
+      maximum-pool-size: 40
+    url: jdbc:postgresql://rcp-manager.cn6bq9wf3qhu.us-east-1.rds.amazonaws.com:5432/postgres
     username: postgres
-    password: dxUW9Hsz03EVWCeeRyaC
+    password: doXzoTWX1M3OUNaeK9hH
 
   jpa:
     show-sql: false
